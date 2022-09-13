@@ -1,5 +1,46 @@
 import { useState } from 'react';
 
+const StatisticsLine = ({ label, value }) => {
+  return (
+    <div>
+      {label} {value}
+    </div>
+  );
+};
+
+const Statistics = ({ good, neutral, bad }) => {
+  const total = good + neutral + bad;
+  const avg = (good - bad) / total;
+  const posRatio = (good / total) * 100;
+
+  if (total > 0) {
+    return (
+      <div>
+        <h1>Statistics</h1>
+        <StatisticsLine label={'Good'} value={good}></StatisticsLine>
+        <StatisticsLine label={'Neutral'} value={neutral}></StatisticsLine>
+        <StatisticsLine label={'Bad'} value={bad}></StatisticsLine>
+        <StatisticsLine label={'Average'} value={avg}></StatisticsLine>
+        <StatisticsLine
+          label={'Positive Ratio'}
+          value={posRatio + '%'}
+        ></StatisticsLine>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <h1>Statistics</h1>
+        <h2>Please submit feedback</h2>
+      </div>
+    );
+  }
+};
+
+const Button = ({ onClickHandler, label }) => {
+  return <button onClick={onClickHandler}>{label}</button>;
+};
+
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0);
@@ -26,16 +67,20 @@ const App = () => {
     <div>
       <div>
         <h1>Give Feedback</h1>
-        <button onClick={incrementState(setGood, good)}>Good</button>
-        <button onClick={incrementState(setNeutral, neutral)}>Neutral</button>
-        <button onClick={incrementState(setBad, bad)}>Bad</button>
+        <Button
+          onClickHandler={incrementState(setGood, good)}
+          label={'Good'}
+        ></Button>
+        <Button
+          onClickHandler={incrementState(setNeutral, neutral)}
+          label={'Neutral'}
+        ></Button>
+        <Button
+          onClickHandler={incrementState(setBad, bad)}
+          label={'Bad'}
+        ></Button>
       </div>
-      <div>
-        <h1>Statistics</h1>
-        <div>Good {good}</div>
-        <div>Neutral {neutral}</div>
-        <div>Bad {bad}</div>
-      </div>
+      <Statistics good={good} bad={bad} neutral={neutral}></Statistics>
     </div>
   );
 };
