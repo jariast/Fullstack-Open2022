@@ -2,7 +2,7 @@ import React from 'react';
 
 const Header = ({ course }) => <h1>{course}</h1>;
 
-const Total = ({ sum }) => <p>Number of exercises {sum}</p>;
+const Total = ({ sum }) => <h3>Number of exercises {sum}</h3>;
 
 const Part = ({ part }) => (
   <p>
