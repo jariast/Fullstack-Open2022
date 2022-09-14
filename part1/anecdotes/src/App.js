@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const App = () => {
   const anecdotes = [
@@ -11,9 +11,20 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
   ];
 
+  const getMostVoted = () => {
+    return points.reduce(
+      (mostVoted, curr, currIndex, array) =>
+        curr > array[mostVoted] ? currIndex : mostVoted,
+      0
+    );
+  };
+
   const [selected, setSelected] = useState(0);
   const [points, setPoints] = useState(new Array(anecdotes.length).fill(0));
-  // const points = new Array(anecdotes.length).fill(0);
+
+  //The most voted anecdote will be found after each render, this way
+  //we don't have to use Effects or another piece of state.
+  const mostVotedIndex = getMostVoted();
 
   const getRandomIndex = (max) => {
     return Math.floor(Math.random() * max);
@@ -31,10 +42,13 @@ const App = () => {
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
       <p>Has {points[selected]} votes</p>
       <button onClick={nextAnecdote}>Next Anecdote</button>
       <button onClick={voteForSelected}>Vote</button>
+      <h1>Anecdote with most votes</h1>
+      <p>{anecdotes[mostVotedIndex]}</p>
     </div>
   );
 };
