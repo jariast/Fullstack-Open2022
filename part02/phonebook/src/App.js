@@ -10,6 +10,10 @@ const App = () => {
 
   const submit = (event) => {
     event.preventDefault();
+    if (persons.find((person) => person.name === newName)) {
+      alert(`${newName} already exists in the notebook`);
+      return;
+    }
     const newPerson = { name: newName };
     setPersons(persons.concat(newPerson));
     setNewName('');
