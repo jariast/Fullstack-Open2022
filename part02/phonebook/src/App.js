@@ -1,18 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
 import ContactForm from './components/ContactForm';
 import Contacts from './components/Contacts';
 import Filter from './components/Filter';
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newPhoneNumber, setNewPhoneNumber] = useState('');
   const [filter, setFilter] = useState('');
+
+  // If using React.StrictMode the component will mount twice on Dev mode.
+  // So there will be two requests on the network tab.
+  const hook = () => {
+    axios.get('http://localhost:3001/persons').then((res) => {
+      console.log('Response', res);
+      return setPersons(res.data);
+    });
+  };
+
+  useEffect(hook, []);
 
   const shownPersons = persons.filter((person) =>
     person.name.toLowerCase().includes(filter)
