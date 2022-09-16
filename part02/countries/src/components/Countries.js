@@ -1,11 +1,16 @@
 import React from 'react';
 
-const Countries = ({ countries }) => {
+const Countries = ({ countries, selectCountryHandler }) => {
   return (
     <>
       <ul>
         {countries.map((country) => (
-          <li key={country.population}>{country.name.common}</li>
+          <li key={country.population}>
+            <p>{country.name.common}</p>
+            <button onClick={() => selectCountryHandler(country)}>
+              Show this country
+            </button>
+          </li>
         ))}
       </ul>
     </>

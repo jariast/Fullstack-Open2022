@@ -1,4 +1,5 @@
 import React from 'react';
+import { useEffect } from 'react';
 
 const Country = ({ country }) => {
   const getLangs = () => {
@@ -9,6 +10,12 @@ const Country = ({ country }) => {
     }
     return langs;
   };
+
+  const countryHook = () => {
+    console.log('Selected Country in Country component: ', country);
+  };
+
+  useEffect(countryHook, [country]);
 
   const languages = getLangs();
   return (

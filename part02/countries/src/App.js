@@ -5,10 +5,25 @@ import Content from './components/Content';
 function App() {
   const [countries, setCountries] = useState([]);
   const [filter, setFilter] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState('');
 
-  const shownCountries = countries.filter((country) =>
-    country.name.common.toLowerCase().includes(filter)
-  );
+  const filterCountries = () => {
+    let filteredCountries = [];
+    if (selectedCountry) {
+      filteredCountries.push(selectedCountry);
+    } else {
+      filteredCountries = countries.filter((country) =>
+        country.name.common.toLowerCase().includes(filter)
+      );
+    }
+    return filteredCountries;
+  };
+
+  const shownCountries = filterCountries();
+
+  const onSelectCountry = (country) => {
+    setSelectedCountry(country);
+  };
 
   const loadCountriesHook = () => {
     axios
@@ -27,7 +42,10 @@ function App() {
         onChange={(e) => setFilter(e.target.value)}
         type="text"
       />
-      <Content countries={shownCountries}></Content>
+      <Content
+        countries={shownCountries}
+        onSelectCountry={onSelectCountry}
+      ></Content>
     </div>
   );
 }
