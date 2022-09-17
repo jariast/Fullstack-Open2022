@@ -19,8 +19,11 @@ const Country = ({ country }) => {
 
   const countryHook = () => {
     console.log('Selected Country in Country component: ', country);
-    const lat = country.latlng[0];
-    const lng = country.latlng[1];
+    // const lat = country.latlng[0];
+    // const lng = country.latlng[1];
+
+    //Using destructuring.
+    const [lat, lng] = [...country.latlng];
     axios
       .get(
         `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${api_key}&units=metric`
