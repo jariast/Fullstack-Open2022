@@ -1,15 +1,15 @@
 import React from 'react';
 import Contact from './Contact';
 
-const Contacts = ({ persons }) => {
+const Contacts = ({ persons, deleteHandler }) => {
   return (
     <>
       <h2>Numbers</h2>
       {persons.map((person) => (
         <Contact
           key={person.name}
-          name={person.name}
-          number={person.number}
+          contact={person}
+          deleteHandler={deleteHandler}
         ></Contact>
       ))}
     </>

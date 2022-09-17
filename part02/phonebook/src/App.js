@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 
 import ContactForm from './components/ContactForm';
 import Contacts from './components/Contacts';
@@ -42,6 +41,17 @@ const App = () => {
     });
   };
 
+  const deleteContactHandler = (contact) => {
+    if (window.confirm(`Do you want to delete ${contact.name}`)) {
+      contactsService.deleteContact(contact.id).then((res) => {
+        const newContacts = persons.filter(
+          (person) => person.id !== contact.id
+        );
+        setPersons(newContacts);
+      });
+    }
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -59,7 +69,10 @@ const App = () => {
           onInputChange(event, setNewPhoneNumber)
         }
       ></ContactForm>
-      <Contacts persons={shownPersons}></Contacts>
+      <Contacts
+        persons={shownPersons}
+        deleteHandler={deleteContactHandler}
+      ></Contacts>
     </div>
   );
 };

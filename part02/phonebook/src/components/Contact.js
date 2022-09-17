@@ -1,11 +1,12 @@
 import React from 'react';
 
-const Contact = ({ name, number }) => {
+const Contact = ({ contact, deleteHandler }) => {
   return (
     <>
       <p>
-        {name} {number}
+        {contact.name} {contact.number}
       </p>
+      <button onClick={() => deleteHandler(contact)}>Delete</button>
     </>
   );
 };

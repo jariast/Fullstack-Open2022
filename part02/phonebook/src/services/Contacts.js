@@ -17,6 +17,11 @@ const update = (id, newContact) => {
   return reqPromise.then((res) => res.data);
 };
 
-const contactsService = { getAll, create, update };
+const deleteContact = (id) => {
+  const reqPromise = axios.delete(`${baseUrl}/${id}`);
+  return reqPromise.then((res) => res.data);
+};
+
+const contactsService = { getAll, create, update, deleteContact };
 
 export default contactsService;
