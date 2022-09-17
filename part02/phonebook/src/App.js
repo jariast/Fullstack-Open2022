@@ -4,6 +4,7 @@ import axios from 'axios';
 import ContactForm from './components/ContactForm';
 import Contacts from './components/Contacts';
 import Filter from './components/Filter';
+import contactsService from './services/Contacts';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -14,10 +15,7 @@ const App = () => {
   // If using React.StrictMode the component will mount twice on Dev mode.
   // So there will be two requests on the network tab.
   const hook = () => {
-    axios.get('http://localhost:3001/persons').then((res) => {
-      console.log('Response', res);
-      return setPersons(res.data);
-    });
+    contactsService.getAll().then((res) => setPersons(res));
   };
 
   useEffect(hook, []);
@@ -37,8 +35,8 @@ const App = () => {
       return;
     }
     const newPerson = { name: newName, number: newPhoneNumber };
-    axios.post('http://localhost:3001/persons', newPerson).then((res) => {
-      setPersons(persons.concat(res.data));
+    contactsService.create(newPerson).then((res) => {
+      setPersons(persons.concat(res));
       setNewName('');
       setNewPhoneNumber('');
     });
