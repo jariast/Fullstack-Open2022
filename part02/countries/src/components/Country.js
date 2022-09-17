@@ -1,7 +1,7 @@
-import React from "react";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import Weather from "./Weather";
+import React from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import Weather from './Weather';
 
 const Country = ({ country }) => {
   const [weatherData, setWeatherData] = useState();
@@ -10,6 +10,7 @@ const Country = ({ country }) => {
   const getLangs = () => {
     const langs = [];
     const langObject = country.languages;
+    // I'm still not sure this is a good practice, to "create" components in a function
     for (const lang in langObject) {
       langs.push(<li key={lang}>{langObject[lang]}</li>);
     }
@@ -17,7 +18,7 @@ const Country = ({ country }) => {
   };
 
   const countryHook = () => {
-    console.log("Selected Country in Country component: ", country);
+    console.log('Selected Country in Country component: ', country);
     const lat = country.latlng[0];
     const lng = country.latlng[1];
     axios

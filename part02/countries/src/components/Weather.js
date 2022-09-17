@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 const Weather = ({ capital, weatherData }) => {
   if (weatherData) {
@@ -14,7 +14,7 @@ const Weather = ({ capital, weatherData }) => {
       </>
     );
   } else {
-    return <p>Loading weatherData</p>;
+    return <p>Loading Weather Data</p>;
   }
 };
 

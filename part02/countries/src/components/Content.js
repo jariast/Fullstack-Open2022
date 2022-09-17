@@ -13,7 +13,7 @@ const Content = ({ countries, onSelectCountry }) => {
       ></Countries>
     );
   } else if (countries.length === 0 || countries.length > 10) {
-    return <div>Please search for a country</div>;
+    return <div>Please search for a country or narrow your search.</div>;
   }
 };
 
