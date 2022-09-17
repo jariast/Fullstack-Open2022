@@ -29,16 +29,41 @@ const App = () => {
 
   const submit = (event) => {
     event.preventDefault();
-    if (persons.find((person) => person.name === newName)) {
-      alert(`${newName} already exists in the notebook`);
-      return;
+    const existingPerson = persons.find((person) => person.name === newName);
+    if (
+      existingPerson &&
+      window.confirm(
+        `${newName} already exists in the notebook, do you want to update its number?`
+      )
+    ) {
+      updateContact(existingPerson);
+    } else {
+      addContact();
     }
+  };
+
+  const addContact = () => {
     const newPerson = { name: newName, number: newPhoneNumber };
     contactsService.create(newPerson).then((res) => {
       setPersons(persons.concat(res));
       setNewName('');
       setNewPhoneNumber('');
     });
+  };
+
+  const updateContact = (existingPerson) => {
+    contactsService
+      .update(existingPerson.id, {
+        ...existingPerson,
+        number: newPhoneNumber,
+      })
+      .then((res) =>
+        setPersons(
+          persons.map((person) =>
+            person.id !== existingPerson.id ? person : res
+          )
+        )
+      );
   };
 
   const deleteContactHandler = (contact) => {
