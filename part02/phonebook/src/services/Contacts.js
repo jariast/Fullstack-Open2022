@@ -1,7 +1,7 @@
 import axios from 'axios';
 const baseUrl = '/api/contacts';
 
-//TODO: find a way to mantain the trailing 0s on the phone number.
+//TODO: find a way to mantain the leading 0s on the phone number.
 
 const getAll = () => {
   const reqPromise = axios.get(baseUrl);
