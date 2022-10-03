@@ -57,7 +57,8 @@ const App = () => {
       })
       .catch((res) => {
         showNotification(
-          `Contact couldn't be created: ${res.response.data.error}`
+          `Contact couldn't be created: ${res.response.data.error}`,
+          true
         );
       });
   };
