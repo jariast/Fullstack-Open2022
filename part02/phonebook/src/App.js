@@ -76,6 +76,12 @@ const App = () => {
             person.id !== existingPerson.id ? person : res
           )
         );
+      })
+      .catch((res) => {
+        showNotification(
+          `Contact couldn't be updated: ${res.response.data.error}`,
+          true
+        );
       });
   };
 
