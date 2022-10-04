@@ -33,13 +33,13 @@ const App = () => {
   const submit = (event) => {
     event.preventDefault();
     const existingPerson = persons.find((person) => person.name === newName);
-    if (
-      existingPerson &&
-      window.confirm(
+    if (existingPerson) {
+      const confirmation = window.confirm(
         `${newName} already exists in the notebook, do you want to update its number?`
-      )
-    ) {
-      updateContact(existingPerson);
+      );
+      if (confirmation) {
+        updateContact(existingPerson);
+      }
     } else {
       addContact();
     }
@@ -47,12 +47,20 @@ const App = () => {
 
   const addContact = () => {
     const newPerson = { name: newName, number: newPhoneNumber };
-    contactsService.create(newPerson).then((res) => {
-      setPersons(persons.concat(res));
-      setNewName('');
-      setNewPhoneNumber('');
-      showNotification(`${res.name} added`);
-    });
+    contactsService
+      .create(newPerson)
+      .then((res) => {
+        setPersons(persons.concat(res));
+        setNewName('');
+        setNewPhoneNumber('');
+        showNotification(`${res.name} added`);
+      })
+      .catch((res) => {
+        showNotification(
+          `Contact couldn't be created: ${res.response.data.error}`,
+          true
+        );
+      });
   };
 
   const updateContact = (existingPerson) => {
@@ -67,6 +75,12 @@ const App = () => {
           persons.map((person) =>
             person.id !== existingPerson.id ? person : res
           )
+        );
+      })
+      .catch((res) => {
+        showNotification(
+          `Contact couldn't be updated: ${res.response.data.error}`,
+          true
         );
       });
   };

@@ -1,5 +1,7 @@
 import axios from 'axios';
-const baseUrl = 'http://localhost:3001/persons';
+const baseUrl = '/api/contacts';
+
+//TODO: find a way to mantain the leading 0s on the phone number.
 
 const getAll = () => {
   const reqPromise = axios.get(baseUrl);
@@ -13,6 +15,7 @@ const create = (newContact) => {
 };
 
 const update = (id, newContact) => {
+  console.log('contact on service', newContact);
   const reqPromise = axios.put(`${baseUrl}/${id}`, newContact);
   return reqPromise.then((res) => res.data);
 };
