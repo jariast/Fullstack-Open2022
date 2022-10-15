@@ -11,12 +11,13 @@ const Login = ({
     <form onSubmit={submitHandler}>
       <h1>Please login</h1>
       <div>
-        <label htmlFor="username">Name</label>
+        <label htmlFor="username">Username</label>
         <input
           type="text"
           id="username"
           value={newUsername}
           onChange={newUsernameHandler}
+          autoComplete="username"
         />
       </div>
       <div>
@@ -26,8 +27,10 @@ const Login = ({
           id="password"
           value={newPassword}
           onChange={newPasswordHandler}
+          autoComplete="current-password"
         />
       </div>
+      <button type="submit">Login</button>
     </form>
   );
 };

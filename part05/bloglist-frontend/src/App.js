@@ -1,20 +1,41 @@
 import { useState, useEffect } from 'react';
 import Blog from './components/Blog';
 import Login from './components/Login';
+import Notification from './components/Notification';
 import blogService from './services/blogs';
+import loginService from './services/login';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
+  const [notificationMsg, setNotificationMsg] = useState('');
+  const [isNotificationError, setIsNotificationError] = useState(false);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
-  const login = (username, password) => {
-    console.log('Username', username);
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    try {
+      const loginResponse = await loginService.login(username, password);
+      setUser(loginResponse);
+      setUsername('');
+      setPassword('');
+    } catch (error) {
+      console.log('Login error', error);
+      showNotification(error.response.data.error, true);
+    }
+  };
+
+  const showNotification = (msg, isError) => {
+    setNotificationMsg(msg);
+    setIsNotificationError(isError);
+    setTimeout(() => {
+      setNotificationMsg('');
+    }, 3000);
   };
 
   const blogsList = () => (
@@ -30,7 +51,7 @@ const App = () => {
     <div>
       {user === null ? (
         <Login
-          submitHandler={login}
+          submitHandler={handleLogin}
           newUsername={username}
           newUsernameHandler={({ target }) => setUsername(target.value)}
           password={password}
@@ -39,6 +60,8 @@ const App = () => {
       ) : (
         blogsList()
       )}
+
+      <Notification message={notificationMsg} isError={isNotificationError} />
     </div>
   );
 };
