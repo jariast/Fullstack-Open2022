@@ -72,6 +72,21 @@ const App = () => {
     }
   };
 
+  const handleBlogLike = async (blogToLike) => {
+    try {
+      const updatedBlog = await blogService.updateLikes(
+        blogToLike.id,
+        blogToLike
+      );
+      setBlogs(
+        blogs.map((blog) => (blog.id === updatedBlog.id ? updatedBlog : blog))
+      );
+    } catch (error) {
+      console.log('Blog liking error', error);
+      showNotification(error.response.data.error, true);
+    }
+  };
+
   const blogsList = () => (
     <>
       <h2>blogs</h2>
@@ -82,7 +97,7 @@ const App = () => {
       </Togglable>
 
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlogHandler={handleBlogLike} />
       ))}
     </>
   );

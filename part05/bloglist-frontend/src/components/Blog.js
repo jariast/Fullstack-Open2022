@@ -1,11 +1,17 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateBlogHandler }) => {
   const [showDetails, setShowDetails] = useState(false);
 
   const toggleDetailsViz = () => {
     setShowDetails(!showDetails);
+  };
+
+  const likeBlog = (blogTolike) => {
+    const copy = { ...blogTolike };
+    copy.likes++;
+    updateBlogHandler(copy);
   };
 
   return (
@@ -17,7 +23,8 @@ const Blog = ({ blog }) => {
       {showDetails && (
         <DetailsWrapper>
           <p>{blog.url}</p>
-          <p>{blog.likes}</p>
+          <p>{blog.likes}</p>{' '}
+          <button onClick={() => likeBlog(blog)}>Like</button>
           <p>{blog.user.name}</p>
         </DetailsWrapper>
       )}
