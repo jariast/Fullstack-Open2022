@@ -15,9 +15,11 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [notificationMsg, setNotificationMsg] = useState('');
   const [isNotificationError, setIsNotificationError] = useState(false);
+  const blogFormRef = useRef();
+  const sortByLikes = (blog1, blog2) => blog2.likes - blog1.likes;
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then((blogs) => setBlogs(blogs.sort(sortByLikes)));
   }, []);
 
   useEffect(() => {
@@ -27,8 +29,6 @@ const App = () => {
       setUser(user);
     }
   }, []);
-
-  const blogFormRef = useRef();
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -79,7 +79,9 @@ const App = () => {
         blogToLike
       );
       setBlogs(
-        blogs.map((blog) => (blog.id === updatedBlog.id ? updatedBlog : blog))
+        blogs
+          .map((blog) => (blog.id === updatedBlog.id ? updatedBlog : blog))
+          .sort(sortByLikes)
       );
     } catch (error) {
       console.log('Blog liking error', error);
