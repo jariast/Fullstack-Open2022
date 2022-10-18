@@ -27,6 +27,7 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
+      blogService.setHeaderConfig(user.token);
     }
   }, []);
 
@@ -38,6 +39,7 @@ const App = () => {
       window.localStorage.setItem('user', JSON.stringify(loginResponse));
       setUsername('');
       setPassword('');
+      blogService.setHeaderConfig(loginResponse.token);
     } catch (error) {
       console.log('Login error', error);
       showNotification(error.response.data.error, true);
@@ -89,6 +91,16 @@ const App = () => {
     }
   };
 
+  const handleBlogDeletion = async (blogId) => {
+    try {
+      await blogService.deleteBlog(blogId);
+      setBlogs(blogs.filter((blog) => blog.id !== blogId));
+    } catch (error) {
+      console.log('Error Deleting blog', error);
+      showNotification(error.response.data.error, true);
+    }
+  };
+
   const blogsList = () => (
     <>
       <h2>blogs</h2>
@@ -99,7 +111,13 @@ const App = () => {
       </Togglable>
 
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} updateBlogHandler={handleBlogLike} />
+        <Blog
+          key={blog.id}
+          blog={blog}
+          updateBlogHandler={handleBlogLike}
+          user={user}
+          deleteBlogHandler={handleBlogDeletion}
+        />
       ))}
     </>
   );
