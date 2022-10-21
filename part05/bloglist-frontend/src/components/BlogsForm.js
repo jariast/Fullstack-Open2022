@@ -25,6 +25,7 @@ const BlogForm = ({ addBloghandler }) => {
         <input
           type="text"
           id="title"
+          placeholder="Title"
           value={title}
           onChange={({ target }) => setTitle(target.value)}
         />
@@ -32,6 +33,7 @@ const BlogForm = ({ addBloghandler }) => {
         <input
           type="text"
           id="author"
+          placeholder="Author"
           value={author}
           onChange={({ target }) => setAuthor(target.value)}
         />
@@ -39,6 +41,7 @@ const BlogForm = ({ addBloghandler }) => {
         <input
           type="text"
           id="url"
+          placeholder="URL"
           value={url}
           onChange={({ target }) => setUrl(target.value)}
         />
