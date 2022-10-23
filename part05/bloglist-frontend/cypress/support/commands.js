@@ -30,6 +30,9 @@ Cypress.Commands.add('resetDB', () => {
   const user = { username: 'testUser01', name: 'User 001', password: '123456' };
 
   cy.request('POST', 'http://localhost:3001/api/users', user);
+});
 
+Cypress.Commands.add('setUserInLocalStorage', (user) => {
+  localStorage.setItem('user', JSON.stringify(user));
   cy.visit('http://localhost:3000');
 });
