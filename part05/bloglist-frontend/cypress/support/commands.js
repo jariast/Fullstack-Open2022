@@ -23,3 +23,13 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('resetDB', () => {
+  cy.request('POST', 'http://localhost:3001/api/testing/reset');
+
+  const user = { username: 'testUser01', name: 'User 001', password: '123456' };
+
+  cy.request('POST', 'http://localhost:3001/api/users', user);
+
+  cy.visit('http://localhost:3000');
+});

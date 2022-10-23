@@ -5,7 +5,11 @@ const Notification = ({ message, isError }) => {
     return null;
   }
 
-  return <Wrapper isError={isError}>{message}</Wrapper>;
+  return (
+    <Wrapper id="notification-wrapper" isError={isError}>
+      {message}
+    </Wrapper>
+  );
 };
 
 const Wrapper = styled.div`

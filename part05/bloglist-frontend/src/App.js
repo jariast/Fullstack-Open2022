@@ -56,7 +56,7 @@ const App = () => {
     setIsNotificationError(isError);
     setTimeout(() => {
       setNotificationMsg('');
-    }, 3000);
+    }, 3000000);
   };
 
   const handleBlogCreation = async (newBlog) => {
@@ -105,7 +105,9 @@ const App = () => {
     <>
       <h2>blogs</h2>
       <p>{`${user.name} is logged in`}</p>
-      <button onClick={handleLogout}>Log out</button>
+      <button id="logout-button" onClick={handleLogout}>
+        Log out
+      </button>
       <Togglable buttonLabel="New Blog" ref={blogFormRef}>
         <BlogForm addBloghandler={handleBlogCreation}></BlogForm>
       </Togglable>
