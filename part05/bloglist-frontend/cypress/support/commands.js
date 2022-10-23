@@ -24,15 +24,31 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+import { users } from '../helpers/testHelpers';
+
 Cypress.Commands.add('resetDB', () => {
   cy.request('POST', 'http://localhost:3001/api/testing/reset');
 
-  const user = { username: 'testUser01', name: 'User 001', password: '123456' };
+  const user = users[0];
 
   cy.request('POST', 'http://localhost:3001/api/users', user);
 });
 
 Cypress.Commands.add('setUserInLocalStorage', (user) => {
   localStorage.setItem('user', JSON.stringify(user));
+  cy.visit('http://localhost:3000');
+});
+
+Cypress.Commands.add('createBlogUsingAPI', (blog) => {
+  console.log('BLog', blog);
+  cy.request({
+    url: 'http://localhost:3001/api/blogs',
+    method: 'POST',
+    body: blog,
+    headers: {
+      Authorization: `bearer ${JSON.parse(localStorage.getItem('user')).token}`,
+    },
+  });
+
   cy.visit('http://localhost:3000');
 });

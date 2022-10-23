@@ -29,14 +29,16 @@ const Blog = ({ blog, updateBlogHandler, user, deleteBlogHandler }) => {
   return (
     <Wrapper data-testid="blogWrapper">
       {blog.title} {blog.author}
-      <button onClick={toggleDetailsViz}>
+      <button onClick={toggleDetailsViz} id="toggle-details-button">
         {showDetails ? 'Hide Details' : 'Show Details'}
       </button>
       {showDetails && (
         <DetailsWrapper>
-          <p>Url: {blog.url}</p>
-          <p>Likes: {blog.likes}</p>
-          <button onClick={() => likeBlog(blog)}>Like Blog</button>
+          <p>{blog.url}</p>
+          <p id="blog-likes">{blog.likes}</p>
+          <button id="like-blog-button" onClick={() => likeBlog(blog)}>
+            Like Blog
+          </button>
           <p>{blog.user.name}</p>
           {showDeleteButton && (
             <button onClick={() => deleteBlog(blog)}>Delete Blog</button>

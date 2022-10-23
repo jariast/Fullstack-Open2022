@@ -1,3 +1,5 @@
+import { users, blogs } from '../helpers/testHelpers';
+
 describe('Blog app', function () {
   beforeEach(function () {
     cy.resetDB();
@@ -53,9 +55,11 @@ describe('Blog app', function () {
     // });
 
     beforeEach(function () {
+      //This can be refactored into a new command
+      const user = { ...users[0] };
       cy.request('POST', 'http://localhost:3001/api/login', {
-        username: 'testUser01',
-        password: '123456',
+        username: user.username,
+        password: user.password,
       }).then(({ body }) => {
         cy.setUserInLocalStorage(body);
       });
@@ -64,12 +68,28 @@ describe('Blog app', function () {
     it('The user can add a blog', function () {
       cy.contains('New Blog').click();
 
-      cy.get('#title').type('Blog using Cypress001');
-      cy.get('#author').type('Cypress');
-      cy.get('#url').type('cy.com');
+      cy.get('#title').type(blogs[0].title);
+      cy.get('#author').type(blogs[0].author);
+      cy.get('#url').type(blogs[0].url);
 
       cy.get('#create-blog-button').click();
       cy.get('[data-testid="blogWrapper"]').should('have.length', 1);
+      cy.contains(`${blogs[0].title} ${blogs[0].author}`);
+    });
+
+    describe('And there is one created blog', function () {
+      beforeEach(function () {
+        cy.createBlogUsingAPI(blogs[0]);
+      });
+
+      it.only('User can like a blog', function () {
+        // toggle-details-button
+        cy.get('#toggle-details-button').click();
+        // cy.get('[data-testid="blogWrapper"]')[0].contains('Likes:');
+        cy.get('#blog-likes').contains('0');
+        cy.get('#like-blog-button').click();
+        cy.get('#blog-likes').contains('1');
+      });
     });
   });
 });
