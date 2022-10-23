@@ -40,22 +40,36 @@ describe('Blog app', function () {
   });
 
   describe('When user is logged in', function () {
-    let user;
+    //this approach didnt work because the bofore it's getting called all the beforeeach
 
-    before(function () {
+    // before(function () {
+    //   console.log('Login user using API', '');
+    //   cy.request('POST', 'http://localhost:3001/api/login', {
+    //     username: 'testUser01',
+    //     password: '123456',
+    //   }).then(({ body }) => {
+    //     user = body;
+    //   });
+    // });
+
+    beforeEach(function () {
       cy.request('POST', 'http://localhost:3001/api/login', {
         username: 'testUser01',
         password: '123456',
       }).then(({ body }) => {
-        user = body;
+        cy.setUserInLocalStorage(body);
       });
     });
 
-    beforeEach(function () {
-      //login user
-      cy.setUserInLocalStorage(user);
-    });
+    it.only('The user can add a blog', function () {
+      cy.contains('New Blog').click();
 
-    it.only('The user can add a blog', function () {});
+      cy.get('#title').type('Blog using Cypress001');
+      cy.get('#author').type('Cypress');
+      cy.get('#url').type('cy.com');
+
+      cy.get('#create-blog-button').click();
+      cy.get('[data-testid="blogWrapper"]').should('have.length', 1);
+    });
   });
 });

@@ -34,8 +34,8 @@ const Blog = ({ blog, updateBlogHandler, user, deleteBlogHandler }) => {
       </button>
       {showDetails && (
         <DetailsWrapper>
-          <p>{blog.url}</p>
-          <p>{blog.likes}</p>
+          <p>Url: {blog.url}</p>
+          <p>Likes: {blog.likes}</p>
           <button onClick={() => likeBlog(blog)}>Like Blog</button>
           <p>{blog.user.name}</p>
           {showDeleteButton && (

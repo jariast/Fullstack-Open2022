@@ -56,7 +56,7 @@ const App = () => {
     setIsNotificationError(isError);
     setTimeout(() => {
       setNotificationMsg('');
-    }, 3000000);
+    }, 3000);
   };
 
   const handleBlogCreation = async (newBlog) => {
