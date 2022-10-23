@@ -61,7 +61,7 @@ describe('Blog app', function () {
       });
     });
 
-    it.only('The user can add a blog', function () {
+    it('The user can add a blog', function () {
       cy.contains('New Blog').click();
 
       cy.get('#title').type('Blog using Cypress001');
