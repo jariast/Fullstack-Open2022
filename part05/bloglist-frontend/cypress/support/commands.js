@@ -34,6 +34,15 @@ Cypress.Commands.add('resetDB', () => {
   cy.request('POST', 'http://localhost:3001/api/users', user);
 });
 
+Cypress.Commands.add('loginAsUser', (user) => {
+  cy.request('POST', 'http://localhost:3001/api/login', {
+    username: user.username,
+    password: user.password,
+  }).then(({ body }) => {
+    cy.setUserInLocalStorage(body);
+  });
+});
+
 Cypress.Commands.add('setUserInLocalStorage', (user) => {
   localStorage.setItem('user', JSON.stringify(user));
   cy.visit('http://localhost:3000');

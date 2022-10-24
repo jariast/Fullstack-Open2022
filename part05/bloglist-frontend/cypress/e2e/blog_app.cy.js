@@ -55,14 +55,9 @@ describe('Blog app', function () {
     // });
 
     beforeEach(function () {
-      //This can be refactored into a new command
       const user = { ...users[0] };
-      cy.request('POST', 'http://localhost:3001/api/login', {
-        username: user.username,
-        password: user.password,
-      }).then(({ body }) => {
-        cy.setUserInLocalStorage(body);
-      });
+
+      cy.loginAsUser(user);
     });
 
     it('The user can add a blog', function () {
@@ -82,13 +77,34 @@ describe('Blog app', function () {
         cy.createBlogUsingAPI(blogs[0]);
       });
 
-      it.only('User can like a blog', function () {
-        // toggle-details-button
+      it('User can like a blog', function () {
         cy.get('#toggle-details-button').click();
-        // cy.get('[data-testid="blogWrapper"]')[0].contains('Likes:');
+
         cy.get('#blog-likes').contains('0');
         cy.get('#like-blog-button').click();
         cy.get('#blog-likes').contains('1');
+      });
+
+      it('User can delete a blog they created', function () {
+        cy.get('#toggle-details-button').click();
+
+        cy.get('#delete-blog-button').click();
+
+        cy.get('[data-testid="blogWrapper"]').should('not.exist');
+      });
+
+      it('If user is not the creator of a blog, the delete button should not appear', function () {
+        const user = { ...users[1] };
+
+        cy.request('POST', 'http://localhost:3001/api/users', user);
+
+        cy.loginAsUser(user);
+
+        cy.contains('User 002 is logged in');
+
+        cy.get('#toggle-details-button').click();
+
+        cy.get('#delete-blog-button').should('not.exist');
       });
     });
   });

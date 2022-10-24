@@ -41,7 +41,9 @@ const Blog = ({ blog, updateBlogHandler, user, deleteBlogHandler }) => {
           </button>
           <p>{blog.user.name}</p>
           {showDeleteButton && (
-            <button onClick={() => deleteBlog(blog)}>Delete Blog</button>
+            <button id="delete-blog-button" onClick={() => deleteBlog(blog)}>
+              Delete Blog
+            </button>
           )}
         </DetailsWrapper>
       )}
