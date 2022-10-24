@@ -107,5 +107,44 @@ describe('Blog app', function () {
         cy.get('#delete-blog-button').should('not.exist');
       });
     });
+
+    describe('And there are several blogs', function () {
+      beforeEach(function () {
+        blogs.map((blog) => {
+          cy.createBlogUsingAPI(blog);
+        });
+      });
+
+      it.only('Should reorder list according to number of likes', function () {
+        cy.get('[data-testid="blogWrapper"]').should('have.length', 3);
+
+        cy.get('[data-testid="blogWrapper"]')
+          .contains(blogs[1].title)
+          .as('mostLikedblog');
+        cy.get('@mostLikedblog').find('#toggle-details-button').click();
+
+        cy.likeBlogAndWaitByAlias('@mostLikedblog', 1);
+        cy.likeBlogAndWaitByAlias('@mostLikedblog', 2);
+        cy.likeBlogAndWaitByAlias('@mostLikedblog', 3);
+
+        cy.get('[data-testid="blogWrapper"]')
+          .contains(blogs[2].title)
+          .as('2ndMostLikedBlog');
+        cy.get('@2ndMostLikedBlog').find('#toggle-details-button').click();
+
+        cy.likeBlogAndWaitByAlias('@2ndMostLikedBlog', 1);
+        cy.likeBlogAndWaitByAlias('@2ndMostLikedBlog', 2);
+
+        cy.get('[data-testid="blogWrapper"]')
+          .eq(0)
+          .should('contain', blogs[1].title);
+        cy.get('[data-testid="blogWrapper"]')
+          .eq(1)
+          .should('contain', blogs[2].title);
+        cy.get('[data-testid="blogWrapper"]')
+          .eq(2)
+          .should('contain', blogs[0].title);
+      });
+    });
   });
 });

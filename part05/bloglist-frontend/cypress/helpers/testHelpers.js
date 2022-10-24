@@ -4,7 +4,9 @@ const users = [
 ];
 
 const blogs = [
-  { title: 'Blog using Cypress001', author: 'Cypress', url: 'cy.com' },
+  { title: 'Blog with least likes', author: 'Cypress', url: 'cy.com' },
+  { title: 'Blog with most likes', author: 'Cypress001', url: 'cy.com' },
+  { title: 'Blog with 2nd most likes', author: 'Cypress002', url: 'cy.com' },
 ];
 
 export default { users, blogs };

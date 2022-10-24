@@ -59,5 +59,10 @@ Cypress.Commands.add('createBlogUsingAPI', (blog) => {
     },
   });
 
+  Cypress.Commands.add('likeBlogAndWaitByAlias', (alias, likes) => {
+    cy.get(alias).find('#like-blog-button').click();
+    cy.get(alias).find('#blog-likes').contains(likes);
+  });
+
   cy.visit('http://localhost:3000');
 });
