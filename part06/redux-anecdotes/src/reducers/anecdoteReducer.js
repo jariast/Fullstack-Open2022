@@ -38,15 +38,27 @@ const reducer = (state = initialState, action) => {
       );
     }
 
+    case 'CREATE_ANECDOTE': {
+      const newAnecdote = asObject(action.data.content);
+      return [...state, newAnecdote];
+    }
+
     default:
       return state;
   }
 };
 
-export const voteForNote = (anecdoteId) => {
+export const voteForAnecdote = (anecdoteId) => {
   return {
     type: 'VOTE_FOR_ANECDOTE',
     data: { anecdoteId },
+  };
+};
+
+export const createAnecdote = (content) => {
+  return {
+    type: 'CREATE_ANECDOTE',
+    data: { content },
   };
 };
 
