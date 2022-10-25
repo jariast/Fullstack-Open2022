@@ -8,16 +8,20 @@ const counterReducer = (state = initialState, action) => {
   console.log(action);
   switch (action.type) {
     case 'GOOD':
-      return state;
+      return replaceObjectProperty(state, 'good', state.good + 1);
     case 'OK':
-      return state;
+      return replaceObjectProperty(state, 'ok', state.ok + 1);
     case 'BAD':
-      return state;
+      return replaceObjectProperty(state, 'bad', state.bad + 1);
     case 'ZERO':
-      return state;
+      return { ...initialState };
     default:
       return state;
   }
+};
+
+const replaceObjectProperty = (obj, property, newValue) => {
+  return { ...obj, [property]: newValue };
 };
 
 export default counterReducer;
