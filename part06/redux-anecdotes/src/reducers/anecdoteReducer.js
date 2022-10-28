@@ -5,17 +5,11 @@ export const anecdotesSlice = createSlice({
   name: 'anecdotes',
   initialState: [],
   reducers: {
-    voteForAnecdote: (state, action) => {
-      const id = action.payload;
-      const anecdoteToVote = state.find((anecdote) => anecdote.id === id);
-
-      const newAnecdote = {
-        ...anecdoteToVote,
-        votes: anecdoteToVote.votes + 1,
-      };
+    updatedAnecdote: (state, action) => {
+      const updatedAnecdote = action.payload;
 
       return state.map((anecdote) =>
-        anecdote.id === newAnecdote.id ? newAnecdote : anecdote
+        anecdote.id === updatedAnecdote.id ? updatedAnecdote : anecdote
       );
     },
     addAnecdote: (state, action) => {
@@ -26,7 +20,7 @@ export const anecdotesSlice = createSlice({
   },
 });
 
-export const { voteForAnecdote, addAnecdote, loadedAllAnecdotes } =
+export const { updatedAnecdote, addAnecdote, loadedAllAnecdotes } =
   anecdotesSlice.actions;
 
 export const loadAllAnecdotes = () => {
@@ -42,6 +36,15 @@ export const createAnecdote = (anecdote) => {
     dispatch(addAnecdote(newAnecdote));
     //I'm pretty sure this is not the best practice to do this.
     return newAnecdote;
+  };
+};
+
+export const voteForAnecdote = (anecdote) => {
+  return async (dispatch) => {
+    const anecdoteCopy = { ...anecdote, votes: anecdote.votes + 1 };
+    const response = await anecdotesService.updateAnecdote(anecdoteCopy);
+    dispatch(updatedAnecdote(response));
+    return response;
   };
 };
 

@@ -24,10 +24,10 @@ const AnecdotesList = () => {
     dispatch(loadAllAnecdotes());
   }, [dispatch]);
 
-  const vote = (anecdote) => {
+  const vote = async (anecdote) => {
     console.log('vote', anecdote.id);
-    dispatch(voteForAnecdote(anecdote.id));
-    showNotification(`You voted for: "${anecdote.content}"`);
+    const updatedAnecdote = await dispatch(voteForAnecdote(anecdote));
+    showNotification(`You voted for: "${updatedAnecdote.content}"`);
   };
 
   const showNotification = (msg) => {
