@@ -1,17 +1,12 @@
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import AnecdotesForm from './components/AnecdotesForm';
 import AnecdotesList from './components/AnecdotesList';
 import Filter from './components/Filter';
 import Notification from './components/Notification';
-import { loadAllAnecdotes } from './reducers/anecdoteReducer';
 
 const App = () => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(loadAllAnecdotes());
-  }, [dispatch]);
-
+  //I moved the loading of Anecdotes to the Anecdotes list, but it be left here
+  //Or even load the list directly in index.js so the Anecdotes load sooner.
+  //Example: https://redux.js.org/tutorials/essentials/part-5-async-logic#loading-users
   return (
     <div>
       <h2>Anecdotes</h2>

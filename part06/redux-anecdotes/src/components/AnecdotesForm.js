@@ -4,7 +4,6 @@ import {
   clearNotification,
   setNotification,
 } from '../reducers/notificationReducer';
-import anecdotesService from '../services/anecdotes';
 
 const AnecdotesForm = () => {
   const dispatch = useDispatch();
@@ -13,11 +12,11 @@ const AnecdotesForm = () => {
     event.preventDefault();
     const content = event.target.noteContent.value;
     event.target.noteContent.value = '';
-    const newAnecdote = await anecdotesService.createAnecdote({
-      content,
-      votes: 0,
-    });
-    dispatch(createAnecdote(newAnecdote));
+
+    //I really don't like this, i think we can achieve the same result by
+    //Using the notifications reducer to act upon the annecdotes/addNote action.
+    //But as we're going to work on the notification in last excercise I'll leave it be.
+    const newAnecdote = await dispatch(createAnecdote({ content, votes: 0 }));
     showNotification(`Created: "${newAnecdote.content}"`);
   };
 

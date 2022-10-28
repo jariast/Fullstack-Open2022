@@ -1,5 +1,6 @@
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { voteForAnecdote } from '../reducers/anecdoteReducer';
+import { loadAllAnecdotes, voteForAnecdote } from '../reducers/anecdoteReducer';
 import {
   clearNotification,
   setNotification,
@@ -18,6 +19,10 @@ const AnecdotesList = () => {
     return filteredAnecdotes.sort((a, b) => b.votes - a.votes);
   });
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(loadAllAnecdotes());
+  }, [dispatch]);
 
   const vote = (anecdote) => {
     console.log('vote', anecdote.id);

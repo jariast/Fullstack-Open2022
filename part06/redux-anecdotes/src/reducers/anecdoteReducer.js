@@ -18,21 +18,30 @@ export const anecdotesSlice = createSlice({
         anecdote.id === newAnecdote.id ? newAnecdote : anecdote
       );
     },
-    createAnecdote: (state, action) => {
+    addAnecdote: (state, action) => {
       const newAnecdote = action.payload;
       return state.concat(newAnecdote);
     },
-    setAllAnecdotes: (state, action) => action.payload,
+    loadedAllAnecdotes: (state, action) => action.payload,
   },
 });
 
-export const { voteForAnecdote, createAnecdote, setAllAnecdotes } =
+export const { voteForAnecdote, addAnecdote, loadedAllAnecdotes } =
   anecdotesSlice.actions;
 
 export const loadAllAnecdotes = () => {
   return async (dispatch) => {
     const anecdotes = await anecdotesService.getAll();
-    dispatch(setAllAnecdotes(anecdotes));
+    dispatch(loadedAllAnecdotes(anecdotes));
+  };
+};
+
+export const createAnecdote = (anecdote) => {
+  return async (dispatch) => {
+    const newAnecdote = await anecdotesService.createAnecdote(anecdote);
+    dispatch(addAnecdote(newAnecdote));
+    //I'm pretty sure this is not the best practice to do this.
+    return newAnecdote;
   };
 };
 
