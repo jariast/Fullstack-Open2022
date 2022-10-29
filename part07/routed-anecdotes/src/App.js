@@ -79,9 +79,17 @@ const Footer = () => (
 );
 
 const CreateNew = (props) => {
-  const content = useField('text');
-  const author = useField('text');
-  const info = useField('text');
+  const resetFunctions = [];
+
+  const extractReset = (field) => {
+    const { reset, ...newField } = field;
+    resetFunctions.push(reset);
+    return newField;
+  };
+
+  const content = extractReset(useField('text'));
+  const author = extractReset(useField('text'));
+  const info = extractReset(useField('text'));
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -93,6 +101,11 @@ const CreateNew = (props) => {
     });
   };
 
+  const handleReset = (event) => {
+    event.preventDefault();
+    resetFunctions.forEach((reset) => reset());
+  };
+
   return (
     <div>
       <h2>create a new anecdote</h2>
@@ -101,9 +114,7 @@ const CreateNew = (props) => {
           content
           <input
             {...content} //Because the useField hook returns an object with the exact
-            //properties we need, we can use spread syntax to declare all fields
-            at
-            once
+            //properties we need, we can use spread syntax to declare all fields at once
           />
         </div>
         <div>
@@ -114,7 +125,8 @@ const CreateNew = (props) => {
           url for more info
           <input {...info} />
         </div>
-        <button>create</button>
+        <button type="submit">create</button>
+        <button onClick={handleReset}>Reset</button>
       </form>
     </div>
   );
