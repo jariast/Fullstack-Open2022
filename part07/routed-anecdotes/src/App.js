@@ -5,6 +5,7 @@ import {
   Route,
   Link,
   useMatch,
+  useNavigate,
 } from 'react-router-dom';
 
 const Menu = () => {
@@ -45,7 +46,7 @@ const Anecdote = ({ anecdote }) => (
     <h2>{anecdote.content}</h2>
     <p>Has {anecdote.votes} votes</p>
     <p>
-      For more info see: <a href={anecdote.url}>{anecdote.url}</a>
+      For more info see: <a href={anecdote.info}>{anecdote.info}</a>
     </p>
   </div>
 );
@@ -132,7 +133,23 @@ const CreateNew = (props) => {
   );
 };
 
+const Notification = (props) => {
+  const notification = props.notification;
+  const style = {
+    border: 'solid',
+    padding: 10,
+    borderWidth: 1,
+  };
+  if (!notification) {
+    return null;
+  }
+  return <div style={style}>{notification}</div>;
+};
+
 const App = () => {
+  let timeoutId;
+  const navigate = useNavigate();
+
   const [anecdotes, setAnecdotes] = useState([
     {
       content: 'If it hurts, do it more often',
@@ -160,6 +177,8 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000);
     setAnecdotes(anecdotes.concat(anecdote));
+    showNotification(`A new anecdote ${anecdote.content} created!`);
+    navigate('/');
   };
 
   const anecdoteById = (id) => anecdotes.find((a) => a.id === id);
@@ -175,11 +194,23 @@ const App = () => {
     setAnecdotes(anecdotes.map((a) => (a.id === id ? voted : a)));
   };
 
+  const showNotification = (msg) => {
+    setNotification(msg);
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    timeoutId = setTimeout(() => {
+      setNotification('');
+    }, 5000);
+  };
+
   return (
     <div>
       <h1>Software anecdotes</h1>
 
       <Menu />
+      <Notification notification={notification} />
 
       <Routes>
         <Route
