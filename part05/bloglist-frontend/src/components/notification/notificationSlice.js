@@ -7,7 +7,10 @@ export const notificationSlice = createSlice({
   initialState: { message: '', isError: false },
   reducers: {
     setNotificationMessage: (state, action) => action.payload,
-    clearNotificationMessage: (state) => (state.message = ''),
+    clearNotificationMessage: (state) => {
+      state.message = '';
+      return state;
+    },
   },
 });
 
@@ -16,8 +19,8 @@ export const { setNotificationMessage, clearNotificationMessage } =
 
 export const showNotification = (
   message,
-  durationInSeconds = 4,
-  isError = false
+  isError = false,
+  durationInSeconds = 4
 ) => {
   return (dispatch) => {
     dispatch(setNotificationMessage({ message, isError }));

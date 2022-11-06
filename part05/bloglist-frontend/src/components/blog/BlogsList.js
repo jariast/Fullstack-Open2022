@@ -55,7 +55,7 @@ const BlogsList = ({ user }) => {
     try {
       await blogService.deleteBlog(blogId);
       setBlogs(blogs.filter((blog) => blog.id !== blogId));
-      dispatch(showNotification('Deleted blog'));
+      dispatch(showNotification('Deleted blog', true));
     } catch (error) {
       console.log('Error Deleting blog', error);
       dispatch(showNotification(error.response.data.error, true));
