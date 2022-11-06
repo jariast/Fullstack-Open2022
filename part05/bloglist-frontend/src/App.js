@@ -1,20 +1,22 @@
 import { useState, useEffect, useRef } from 'react';
-import Blog from './components/Blog';
+import { useDispatch } from 'react-redux';
+
 import Login from './components/Login';
-import BlogForm from './components/BlogsForm';
-import Notification from './components/Notification';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import Togglable from './components/Togglable';
+import Blog from './components/blog/Blog';
+import BlogForm from './components/blogsForm/BlogsForm';
+import Notification from './components/notification/Notification';
+import { showNotification } from './components/notification/notificationSlice';
 
 const App = () => {
+  const dispatch = useDispatch();
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const [user, setUser] = useState(null);
-  const [notificationMsg, setNotificationMsg] = useState('');
-  const [isNotificationError, setIsNotificationError] = useState(false);
   const blogFormRef = useRef();
   const sortByLikes = (blog1, blog2) => blog2.likes - blog1.likes;
 
@@ -42,7 +44,7 @@ const App = () => {
       blogService.setHeaderConfig(loginResponse.token);
     } catch (error) {
       console.log('Login error', error);
-      showNotification(error.response.data.error, true);
+      dispatch(showNotification(error.response.data.error, true));
     }
   };
 
@@ -51,26 +53,21 @@ const App = () => {
     setUser(null);
   };
 
-  const showNotification = (msg, isError) => {
-    setNotificationMsg(msg);
-    setIsNotificationError(isError);
-    setTimeout(() => {
-      setNotificationMsg('');
-    }, 3000);
-  };
-
   const handleBlogCreation = async (newBlog) => {
     try {
       blogFormRef.current.toggleVisibility();
       const createdBlog = await blogService.createBlog(user.token, newBlog);
 
       setBlogs(blogs.concat(createdBlog));
-      showNotification(
-        `A new blog "${createdBlog.title}" by ${createdBlog.author} added`
+
+      dispatch(
+        showNotification(
+          `A new blog "${createdBlog.title}" by ${createdBlog.author} added`
+        )
       );
     } catch (error) {
       console.log('Blog creation error', error);
-      showNotification(error.response.data.error, true);
+      dispatch(showNotification(error.response.data.error, true));
     }
   };
 
@@ -87,7 +84,6 @@ const App = () => {
       );
     } catch (error) {
       console.log('Blog liking error', error);
-      showNotification(error.response.data.error, true);
     }
   };
 
@@ -97,7 +93,7 @@ const App = () => {
       setBlogs(blogs.filter((blog) => blog.id !== blogId));
     } catch (error) {
       console.log('Error Deleting blog', error);
-      showNotification(error.response.data.error, true);
+      dispatch(showNotification(error.response.data.error, true));
     }
   };
 
@@ -138,7 +134,7 @@ const App = () => {
         blogsList()
       )}
 
-      <Notification message={notificationMsg} isError={isNotificationError} />
+      <Notification />
     </div>
   );
 };
