@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import blogService from '../../services/blogs';
 import Togglable from '../Togglable';
 import Blog from './Blog';
-import BlogForm from '../blogsForm/BlogsForm';
+import BlogForm from './BlogsForm';
 import { showNotification } from '../notification/notificationSlice';
 
 const BlogsList = ({ user }) => {
