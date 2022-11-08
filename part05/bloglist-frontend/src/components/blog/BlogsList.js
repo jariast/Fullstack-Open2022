@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import Togglable from '../Togglable';
 import Blog from './Blog';
 import BlogForm from './BlogsForm';
-// import { showNotification } from '../notification/notificationSlice';
-import { fetchBlogs, selectAllBlogs } from './blogsSlice';
+import { showNotification } from '../notification/notificationSlice';
+import { createBlog, fetchBlogs, selectAllBlogs } from './blogsSlice';
 
 const BlogsList = ({ user }) => {
   const dispatch = useDispatch();
@@ -24,22 +24,17 @@ const BlogsList = ({ user }) => {
   }, [reqStatus, dispatch]);
 
   const handleBlogCreation = async (newBlog) => {
-    return;
-    // try {
-    //   blogFormRef.current.toggleVisibility();
-    //   const createdBlog = await blogService.createBlog(user.token, newBlog);
-
-    //   setBlogs(blogs.concat(createdBlog));
-
-    //   dispatch(
-    //     showNotification(
-    //       `A new blog "${createdBlog.title}" by ${createdBlog.author} added`
-    //     )
-    //   );
-    // } catch (error) {
-    //   console.log('Blog creation error', error);
-    //   dispatch(showNotification(error.response.data.error, true));
-    // }
+    try {
+      blogFormRef.current.toggleVisibility();
+      const response = await dispatch(createBlog(newBlog)).unwrap();
+      dispatch(
+        showNotification(
+          `A new blog "${response.title}" by ${response.author} added`
+        )
+      );
+    } catch (error) {
+      dispatch(showNotification(error, true));
+    }
   };
 
   // const handleBlogLike = async (blogToLike) => {

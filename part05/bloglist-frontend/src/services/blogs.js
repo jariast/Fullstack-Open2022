@@ -13,7 +13,7 @@ const getAll = async () => {
   return response.data;
 };
 
-const createBlog = async (token, blog) => {
+const createBlog = async (blog) => {
   const response = await axios.post(baseUrl, blog, config);
 
   return response.data;
