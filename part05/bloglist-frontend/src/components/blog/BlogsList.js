@@ -4,8 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Togglable from '../Togglable';
 import Blog from './Blog';
 import BlogForm from './BlogsForm';
-import { showNotification } from '../notification/notificationSlice';
-import { createBlog, fetchBlogs, selectAllBlogs } from './blogsSlice';
+import { fetchBlogs, selectAllBlogs } from './blogsSlice';
 
 const BlogsList = ({ user }) => {
   const dispatch = useDispatch();
@@ -23,18 +22,8 @@ const BlogsList = ({ user }) => {
     }
   }, [reqStatus, dispatch]);
 
-  const handleBlogCreation = async (newBlog) => {
-    try {
-      blogFormRef.current.toggleVisibility();
-      const response = await dispatch(createBlog(newBlog)).unwrap();
-      dispatch(
-        showNotification(
-          `A new blog "${response.title}" by ${response.author} added`
-        )
-      );
-    } catch (error) {
-      dispatch(showNotification(error, true));
-    }
+  const handleBlogCreation = () => {
+    blogFormRef.current.toggleVisibility();
   };
 
   // const handleBlogLike = async (blogToLike) => {
@@ -67,7 +56,7 @@ const BlogsList = ({ user }) => {
   return (
     <>
       <Togglable buttonLabel="New Blog" ref={blogFormRef}>
-        <BlogForm addBloghandler={handleBlogCreation}></BlogForm>
+        <BlogForm blogCreationHandler={handleBlogCreation}></BlogForm>
       </Togglable>
 
       {orderedBlogs.map((blog) => (
