@@ -1,66 +1,73 @@
-import { useState, useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import blogService from '../../services/blogs';
 import Togglable from '../Togglable';
 import Blog from './Blog';
 import BlogForm from './BlogsForm';
-import { showNotification } from '../notification/notificationSlice';
+// import { showNotification } from '../notification/notificationSlice';
+import { fetchBlogs, selectAllBlogs } from './blogsSlice';
 
 const BlogsList = ({ user }) => {
   const dispatch = useDispatch();
-  const [blogs, setBlogs] = useState([]);
   const blogFormRef = useRef();
   const sortByLikes = (blog1, blog2) => blog2.likes - blog1.likes;
 
+  const blogs = useSelector(selectAllBlogs);
+  const reqStatus = useSelector((state) => state.blogs.status);
+
+  const orderedBlogs = blogs.slice().sort(sortByLikes);
+
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs.sort(sortByLikes)));
-  }, []);
+    if (reqStatus === 'idle') {
+      dispatch(fetchBlogs());
+    }
+  }, [reqStatus, dispatch]);
 
   const handleBlogCreation = async (newBlog) => {
-    try {
-      blogFormRef.current.toggleVisibility();
-      const createdBlog = await blogService.createBlog(user.token, newBlog);
+    return;
+    // try {
+    //   blogFormRef.current.toggleVisibility();
+    //   const createdBlog = await blogService.createBlog(user.token, newBlog);
 
-      setBlogs(blogs.concat(createdBlog));
+    //   setBlogs(blogs.concat(createdBlog));
 
-      dispatch(
-        showNotification(
-          `A new blog "${createdBlog.title}" by ${createdBlog.author} added`
-        )
-      );
-    } catch (error) {
-      console.log('Blog creation error', error);
-      dispatch(showNotification(error.response.data.error, true));
-    }
+    //   dispatch(
+    //     showNotification(
+    //       `A new blog "${createdBlog.title}" by ${createdBlog.author} added`
+    //     )
+    //   );
+    // } catch (error) {
+    //   console.log('Blog creation error', error);
+    //   dispatch(showNotification(error.response.data.error, true));
+    // }
   };
 
-  const handleBlogLike = async (blogToLike) => {
-    try {
-      const updatedBlog = await blogService.updateLikes(
-        blogToLike.id,
-        blogToLike
-      );
-      setBlogs(
-        blogs
-          .map((blog) => (blog.id === updatedBlog.id ? updatedBlog : blog))
-          .sort(sortByLikes)
-      );
-    } catch (error) {
-      console.log('Blog liking error', error);
-    }
-  };
+  // const handleBlogLike = async (blogToLike) => {
+  //   try {
+  //     const updatedBlog = await blogService.updateLikes(
+  //       blogToLike.id,
+  //       blogToLike
+  //     );
+  //     setBlogs(
+  //       blogs
+  //         .map((blog) => (blog.id === updatedBlog.id ? updatedBlog : blog))
+  //         .sort(sortByLikes)
+  //     );
+  //   } catch (error) {
+  //     console.log('Blog liking error', error);
+  //   }
+  //};
 
-  const handleBlogDeletion = async (blogId) => {
-    try {
-      await blogService.deleteBlog(blogId);
-      setBlogs(blogs.filter((blog) => blog.id !== blogId));
-      dispatch(showNotification('Deleted blog', true));
-    } catch (error) {
-      console.log('Error Deleting blog', error);
-      dispatch(showNotification(error.response.data.error, true));
-    }
-  };
+  // const handleBlogDeletion = async (blogId) => {
+  //   try {
+  //     await blogService.deleteBlog(blogId);
+  //     setBlogs(blogs.filter((blog) => blog.id !== blogId));
+  //     dispatch(showNotification('Deleted blog', true));
+  //   } catch (error) {
+  //     console.log('Error Deleting blog', error);
+  //     dispatch(showNotification(error.response.data.error, true));
+  //   }
+  // };
 
   return (
     <>
@@ -68,13 +75,13 @@ const BlogsList = ({ user }) => {
         <BlogForm addBloghandler={handleBlogCreation}></BlogForm>
       </Togglable>
 
-      {blogs.map((blog) => (
+      {orderedBlogs.map((blog) => (
         <Blog
           key={blog.id}
           blog={blog}
-          updateBlogHandler={handleBlogLike}
+          // updateBlogHandler={handleBlogLike}
           user={user}
-          deleteBlogHandler={handleBlogDeletion}
+          // deleteBlogHandler={handleBlogDeletion}
         />
       ))}
     </>
