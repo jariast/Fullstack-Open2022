@@ -19,8 +19,11 @@ const createBlog = async (blog) => {
   return response.data;
 };
 
-const updateLikes = async (blogId, blogToUpdate) => {
-  const response = await axios.put(`${baseUrl}/${blogId}`, blogToUpdate);
+const updateLikes = async (blogToUpdate) => {
+  const response = await axios.put(
+    `${baseUrl}/${blogToUpdate.id}`,
+    blogToUpdate
+  );
   return response.data;
 };
 

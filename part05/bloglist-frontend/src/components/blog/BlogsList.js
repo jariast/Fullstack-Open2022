@@ -63,7 +63,6 @@ const BlogsList = ({ user }) => {
         <Blog
           key={blog.id}
           blog={blog}
-          // updateBlogHandler={handleBlogLike}
           user={user}
           // deleteBlogHandler={handleBlogDeletion}
         />

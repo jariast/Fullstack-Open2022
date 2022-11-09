@@ -20,6 +20,15 @@ export const createBlog = createAsyncThunk(
   }
 );
 
+export const likeBlog = createAsyncThunk(
+  'blogs/likeBlog',
+  async (blogToUpdate) => {
+    blogToUpdate.likes++;
+    const response = await blogsService.updateLikes(blogToUpdate);
+    return response;
+  }
+);
+
 const blogsSlice = createSlice({
   name: 'blogs',
   initialState,
@@ -39,6 +48,15 @@ const blogsSlice = createSlice({
       })
       .addCase(createBlog.rejected, (state) => {
         state.status = 'failed';
+      })
+      .addCase(likeBlog.fulfilled, (state, action) => {
+        const updatedBlog = action.payload;
+        let existingBlog = state.blogs.find((blog) => {
+          return blog.id === updatedBlog.id;
+        });
+        if (existingBlog) {
+          existingBlog.likes = updatedBlog.likes;
+        }
       });
   },
 });

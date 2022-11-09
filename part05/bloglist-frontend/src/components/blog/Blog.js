@@ -1,8 +1,11 @@
 import styled from 'styled-components';
 import { useState } from 'react';
+import { likeBlog } from './blogsSlice';
+import { useDispatch } from 'react-redux';
 
-const Blog = ({ blog, updateBlogHandler, user, deleteBlogHandler }) => {
+const Blog = ({ blog, user, deleteBlogHandler }) => {
   const [showDetails, setShowDetails] = useState(false);
+  const dispatch = useDispatch();
 
   const showDeleteButton = user.id === blog.user.id;
 
@@ -10,10 +13,9 @@ const Blog = ({ blog, updateBlogHandler, user, deleteBlogHandler }) => {
     setShowDetails(!showDetails);
   };
 
-  const likeBlog = (blogTolike) => {
+  const handleLikeBlog = (blogTolike) => {
     const copy = { ...blogTolike };
-    copy.likes++;
-    updateBlogHandler(copy);
+    dispatch(likeBlog(copy));
   };
 
   const deleteBlog = (blog) => {
@@ -36,7 +38,7 @@ const Blog = ({ blog, updateBlogHandler, user, deleteBlogHandler }) => {
         <DetailsWrapper>
           <p>{blog.url}</p>
           <p id="blog-likes">{blog.likes}</p>
-          <button id="like-blog-button" onClick={() => likeBlog(blog)}>
+          <button id="like-blog-button" onClick={() => handleLikeBlog(blog)}>
             Like Blog
           </button>
           <p>{blog.user.name}</p>
