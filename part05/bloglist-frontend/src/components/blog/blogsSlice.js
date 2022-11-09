@@ -29,6 +29,18 @@ export const likeBlog = createAsyncThunk(
   }
 );
 
+export const deleteBlog = createAsyncThunk(
+  'blogs/deleteBlog',
+  async (blogId, { rejectWithValue }) => {
+    try {
+      await blogsService.deleteBlog(blogId);
+      return blogId;
+    } catch (error) {
+      return rejectWithValue(error.response.data.error);
+    }
+  }
+);
+
 const blogsSlice = createSlice({
   name: 'blogs',
   initialState,
@@ -57,6 +69,9 @@ const blogsSlice = createSlice({
         if (existingBlog) {
           existingBlog.likes = updatedBlog.likes;
         }
+      })
+      .addCase(deleteBlog.fulfilled, (state, action) => {
+        state.blogs = state.blogs.filter((blog) => blog.id !== action.payload);
       });
   },
 });

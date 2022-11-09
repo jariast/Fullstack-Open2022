@@ -26,33 +26,6 @@ const BlogsList = ({ user }) => {
     blogFormRef.current.toggleVisibility();
   };
 
-  // const handleBlogLike = async (blogToLike) => {
-  //   try {
-  //     const updatedBlog = await blogService.updateLikes(
-  //       blogToLike.id,
-  //       blogToLike
-  //     );
-  //     setBlogs(
-  //       blogs
-  //         .map((blog) => (blog.id === updatedBlog.id ? updatedBlog : blog))
-  //         .sort(sortByLikes)
-  //     );
-  //   } catch (error) {
-  //     console.log('Blog liking error', error);
-  //   }
-  //};
-
-  // const handleBlogDeletion = async (blogId) => {
-  //   try {
-  //     await blogService.deleteBlog(blogId);
-  //     setBlogs(blogs.filter((blog) => blog.id !== blogId));
-  //     dispatch(showNotification('Deleted blog', true));
-  //   } catch (error) {
-  //     console.log('Error Deleting blog', error);
-  //     dispatch(showNotification(error.response.data.error, true));
-  //   }
-  // };
-
   return (
     <>
       <Togglable buttonLabel="New Blog" ref={blogFormRef}>

@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-import { likeBlog } from './blogsSlice';
+import { deleteBlog, likeBlog } from './blogsSlice';
 import { useDispatch } from 'react-redux';
+import { showNotification } from '../notification/notificationSlice';
 
-const Blog = ({ blog, user, deleteBlogHandler }) => {
+const Blog = ({ blog, user }) => {
   const [showDetails, setShowDetails] = useState(false);
   const dispatch = useDispatch();
 
@@ -18,13 +19,18 @@ const Blog = ({ blog, user, deleteBlogHandler }) => {
     dispatch(likeBlog(copy));
   };
 
-  const deleteBlog = (blog) => {
+  const handleBlogDeletion = async (blog) => {
     if (
       window.confirm(
         `Do you really want to delete ${blog.title} by ${blog.author}?`
       )
     ) {
-      deleteBlogHandler(blog.id);
+      try {
+        await dispatch(deleteBlog(blog.id)).unwrap();
+        dispatch(showNotification(' Deleted Blog'));
+      } catch (error) {
+        dispatch(showNotification(error, true));
+      }
     }
   };
 
@@ -43,7 +49,10 @@ const Blog = ({ blog, user, deleteBlogHandler }) => {
           </button>
           <p>{blog.user.name}</p>
           {showDeleteButton && (
-            <button id="delete-blog-button" onClick={() => deleteBlog(blog)}>
+            <button
+              id="delete-blog-button"
+              onClick={() => handleBlogDeletion(blog)}
+            >
               Delete Blog
             </button>
           )}
