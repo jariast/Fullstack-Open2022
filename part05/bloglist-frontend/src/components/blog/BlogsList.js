@@ -6,7 +6,7 @@ import Blog from './Blog';
 import BlogForm from './BlogsForm';
 import { fetchBlogs, selectAllBlogs } from './blogsSlice';
 
-const BlogsList = ({ user }) => {
+const BlogsList = () => {
   const dispatch = useDispatch();
   const blogFormRef = useRef();
   const sortByLikes = (blog1, blog2) => blog2.likes - blog1.likes;
@@ -33,12 +33,7 @@ const BlogsList = ({ user }) => {
       </Togglable>
 
       {orderedBlogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          user={user}
-          // deleteBlogHandler={handleBlogDeletion}
-        />
+        <Blog key={blog.id} blog={blog} />
       ))}
     </>
   );

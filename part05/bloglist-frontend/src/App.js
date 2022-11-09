@@ -1,25 +1,30 @@
 import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Login from './components/Login';
 import blogService from './services/blogs';
-import loginService from './services/login';
 import Notification from './components/notification/Notification';
 import { showNotification } from './components/notification/notificationSlice';
 import BlogsList from './components/blog/BlogsList';
+import {
+  loginUser,
+  selectLoggedUser,
+  userLoggedIn,
+  userLoggedOut,
+} from './components/user/usersSlice';
 
 const App = () => {
   const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const [user, setUser] = useState(null);
+  const user = useSelector(selectLoggedUser);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('user');
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
-      setUser(user);
+      dispatch(userLoggedIn(user));
       blogService.setHeaderConfig(user.token);
     }
   }, []);
@@ -27,21 +32,21 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const loginResponse = await loginService.login(username, password);
-      setUser(loginResponse);
-      window.localStorage.setItem('user', JSON.stringify(loginResponse));
+      const response = await dispatch(
+        loginUser({ username, password })
+      ).unwrap();
+      window.localStorage.setItem('user', JSON.stringify(response));
       setUsername('');
       setPassword('');
-      blogService.setHeaderConfig(loginResponse.token);
+      blogService.setHeaderConfig(response.token);
     } catch (error) {
-      console.log('Login error', error);
-      dispatch(showNotification(error.response.data.error, true));
+      dispatch(showNotification(error, true));
     }
   };
 
   const handleLogout = () => {
     window.localStorage.removeItem('user');
-    setUser(null);
+    dispatch(userLoggedOut());
   };
 
   return (
@@ -61,7 +66,7 @@ const App = () => {
           <button id="logout-button" onClick={handleLogout}>
             Log out
           </button>
-          <BlogsList user={user}></BlogsList>
+          <BlogsList></BlogsList>
         </>
       )}
 
