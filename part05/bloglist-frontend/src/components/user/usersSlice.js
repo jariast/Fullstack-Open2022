@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import loginService from '../../services/login';
+import usersService from '../../services/users';
 
-const initialState = { loggedUser: null };
+const initialState = { users: [], loggedUser: null };
 
 export const loginUser = createAsyncThunk(
   'users/login',
@@ -14,6 +15,11 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
+
+export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
+  const response = await usersService.getAll();
+  return response;
+});
 
 const userSlice = createSlice({
   name: 'users',
@@ -31,9 +37,13 @@ const userSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    builder.addCase(loginUser.fulfilled, (state, action) => {
-      state.loggedUser = action.payload;
-    });
+    builder
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.loggedUser = action.payload;
+      })
+      .addCase(fetchUsers.fulfilled, (state, action) => {
+        state.users = action.payload;
+      });
   },
 });
 

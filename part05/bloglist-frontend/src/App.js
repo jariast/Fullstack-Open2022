@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Login from './components/Login';
 import blogService from './services/blogs';
@@ -12,6 +13,7 @@ import {
   userLoggedIn,
   userLoggedOut,
 } from './components/user/usersSlice';
+import UsersList from './components/user/usersList';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -60,14 +62,17 @@ const App = () => {
           newPasswordHandler={({ target }) => setPassword(target.value)}
         ></Login>
       ) : (
-        <>
+        <Router>
           <h2>blogs</h2>
           <p>{`${user.name} is logged in`}</p>
           <button id="logout-button" onClick={handleLogout}>
             Log out
           </button>
-          <BlogsList></BlogsList>
-        </>
+          <Routes>
+            <Route path="/users" element={<UsersList />} />
+            <Route path="/" element={<BlogsList />} />
+          </Routes>
+        </Router>
       )}
 
       <Notification />
