@@ -1,6 +1,7 @@
 import {
   createAsyncThunk,
   createEntityAdapter,
+  createSelector,
   createSlice,
 } from '@reduxjs/toolkit';
 import blogsService from '../../services/blogs';
@@ -88,3 +89,8 @@ export const {
   selectById: selectBlogById,
   selectIds: selectBlogsIds,
 } = blogsAdapter.getSelectors((state) => state.blogs);
+
+export const selectBlogsByUser = createSelector(
+  [selectAllBlogs, (state, userId) => userId],
+  (blogs, userId) => blogs.filter((blog) => blog.user === userId)
+);
