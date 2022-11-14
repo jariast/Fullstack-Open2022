@@ -8,12 +8,15 @@ import Notification from './components/notification/Notification';
 import { showNotification } from './components/notification/notificationSlice';
 import BlogsList from './components/blog/BlogsList';
 import {
+  fetchUsers,
   loginUser,
   selectLoggedUser,
   userLoggedIn,
   userLoggedOut,
 } from './components/user/usersSlice';
-import UsersList from './components/user/usersList';
+import UsersList from './components/user/UsersList';
+import User from './components/user/User';
+import { fetchBlogs } from './components/blog/blogsSlice';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -30,6 +33,14 @@ const App = () => {
       blogService.setHeaderConfig(user.token);
     }
   }, []);
+
+  useEffect(() => {
+    dispatch(fetchBlogs());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -69,6 +80,7 @@ const App = () => {
             Log out
           </button>
           <Routes>
+            <Route path="/users/:userId" element={<User />} />
             <Route path="/users" element={<UsersList />} />
             <Route path="/" element={<BlogsList />} />
           </Routes>

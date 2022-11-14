@@ -1,23 +1,16 @@
-import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useRef } from 'react';
+import { useSelector } from 'react-redux';
 
 import Togglable from '../Togglable';
 import Blog from './Blog';
 import BlogForm from './BlogsForm';
-import { fetchBlogs, selectBlogsIds } from './blogsSlice';
+import { selectBlogsIds } from './blogsSlice';
 
 const BlogsList = () => {
-  const dispatch = useDispatch();
   const blogFormRef = useRef();
 
   const blogsIds = useSelector(selectBlogsIds);
   const reqStatus = useSelector((state) => state.blogs.status);
-
-  useEffect(() => {
-    if (reqStatus === 'idle') {
-      dispatch(fetchBlogs());
-    }
-  }, [reqStatus, dispatch]);
 
   const handleBlogCreation = () => {
     blogFormRef.current.toggleVisibility();
