@@ -1,7 +1,15 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createEntityAdapter,
+  createSlice,
+} from '@reduxjs/toolkit';
 import blogsService from '../../services/blogs';
 
-const initialState = { blogs: [], status: 'idle' };
+const blogsAdapter = createEntityAdapter({
+  sortComparer: (a, b) => b.likes - a.likes,
+});
+
+const initialState = blogsAdapter.getInitialState({ status: 'idle' });
 
 export const fetchBlogs = createAsyncThunk('blogs/fetchBlogs', async () => {
   const response = await blogsService.getAll();
@@ -52,30 +60,31 @@ const blogsSlice = createSlice({
       })
       .addCase(fetchBlogs.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.blogs = action.payload;
+        blogsAdapter.upsertMany(state, action.payload);
       })
       .addCase(createBlog.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.blogs.push(action.payload);
+        blogsAdapter.addOne(state, action.payload);
       })
       .addCase(createBlog.rejected, (state) => {
         state.status = 'failed';
       })
       .addCase(likeBlog.fulfilled, (state, action) => {
         const updatedBlog = action.payload;
-        let existingBlog = state.blogs.find((blog) => {
-          return blog.id === updatedBlog.id;
-        });
+
+        const existingBlog = state.entities[updatedBlog.id];
         if (existingBlog) {
           existingBlog.likes = updatedBlog.likes;
         }
       })
-      .addCase(deleteBlog.fulfilled, (state, action) => {
-        state.blogs = state.blogs.filter((blog) => blog.id !== action.payload);
-      });
+      .addCase(deleteBlog.fulfilled, blogsAdapter.removeOne);
   },
 });
 
 export default blogsSlice.reducer;
 
-export const selectAllBlogs = (state) => state.blogs.blogs;
+export const {
+  selectAll: selectAllBlogs,
+  selectById: selectBlogById,
+  selectIds: selectBlogsIds,
+} = blogsAdapter.getSelectors((state) => state.blogs);

@@ -1,17 +1,19 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-import { deleteBlog, likeBlog } from './blogsSlice';
+import { deleteBlog, likeBlog, selectBlogById } from './blogsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { showNotification } from '../notification/notificationSlice';
 import { selectLoggedUser } from '../user/usersSlice';
 
-const Blog = ({ blog }) => {
+const Blog = ({ blogId }) => {
   const [showDetails, setShowDetails] = useState(false);
   const dispatch = useDispatch();
 
+  const blog = useSelector((state) => selectBlogById(state, blogId));
+
   const user = useSelector(selectLoggedUser);
 
-  const showDeleteButton = user.id === blog.user.id;
+  const showDeleteButton = user.id === blog.user;
 
   const toggleDetailsViz = () => {
     setShowDetails(!showDetails);

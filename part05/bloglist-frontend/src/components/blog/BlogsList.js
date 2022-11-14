@@ -4,17 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import Togglable from '../Togglable';
 import Blog from './Blog';
 import BlogForm from './BlogsForm';
-import { fetchBlogs, selectAllBlogs } from './blogsSlice';
+import { fetchBlogs, selectBlogsIds } from './blogsSlice';
 
 const BlogsList = () => {
   const dispatch = useDispatch();
   const blogFormRef = useRef();
-  const sortByLikes = (blog1, blog2) => blog2.likes - blog1.likes;
 
-  const blogs = useSelector(selectAllBlogs);
+  const blogsIds = useSelector(selectBlogsIds);
   const reqStatus = useSelector((state) => state.blogs.status);
-
-  const orderedBlogs = blogs.slice().sort(sortByLikes);
 
   useEffect(() => {
     if (reqStatus === 'idle') {
@@ -26,15 +23,19 @@ const BlogsList = () => {
     blogFormRef.current.toggleVisibility();
   };
 
+  let content;
+
+  if (reqStatus === 'succeeded' || blogsIds.length > 0) {
+    content = blogsIds.map((blogId) => <Blog key={blogId} blogId={blogId} />);
+  }
+
   return (
     <>
       <Togglable buttonLabel="New Blog" ref={blogFormRef}>
         <BlogForm blogCreationHandler={handleBlogCreation}></BlogForm>
       </Togglable>
 
-      {orderedBlogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
+      {content}
     </>
   );
 };
