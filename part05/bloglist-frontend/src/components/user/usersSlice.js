@@ -1,8 +1,14 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {
+  createAsyncThunk,
+  createEntityAdapter,
+  createSlice,
+} from '@reduxjs/toolkit';
 import loginService from '../../services/login';
 import usersService from '../../services/users';
 
-const initialState = { users: [], loggedUser: null };
+const usersAdapter = createEntityAdapter();
+
+const initialState = usersAdapter.getInitialState({ loggedUser: null });
 
 export const loginUser = createAsyncThunk(
   'users/login',
@@ -42,7 +48,7 @@ const userSlice = createSlice({
         state.loggedUser = action.payload;
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
-        state.users = action.payload;
+        usersAdapter.upsertMany(state, action.payload);
       });
   },
 });
@@ -52,3 +58,9 @@ export const { userLoggedIn, userLoggedOut } = userSlice.actions;
 export default userSlice.reducer;
 
 export const selectLoggedUser = (state) => state.users.loggedUser;
+
+export const {
+  selectAll: selectAllUsers,
+  selectById: selectUserById,
+  selectIds: selectUsersIds,
+} = usersAdapter.getSelectors((state) => state.users);
