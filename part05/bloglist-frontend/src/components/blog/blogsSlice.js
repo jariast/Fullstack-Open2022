@@ -73,10 +73,10 @@ const blogsSlice = createSlice({
       .addCase(likeBlog.fulfilled, (state, action) => {
         const updatedBlog = action.payload;
 
-        const existingBlog = state.entities[updatedBlog.id];
-        if (existingBlog) {
-          existingBlog.likes = updatedBlog.likes;
-        }
+        blogsAdapter.updateOne(state, {
+          id: updatedBlog.id,
+          changes: { likes: updatedBlog.likes++ },
+        });
       })
       .addCase(deleteBlog.fulfilled, blogsAdapter.removeOne);
   },

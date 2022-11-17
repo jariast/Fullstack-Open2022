@@ -17,6 +17,7 @@ import {
 import UsersList from './components/user/UsersList';
 import User from './components/user/User';
 import { fetchBlogs } from './components/blog/blogsSlice';
+import SingleBlog from './components/blog/SingleBlog';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -82,6 +83,8 @@ const App = () => {
           <Routes>
             <Route path="/users/:userId" element={<User />} />
             <Route path="/users" element={<UsersList />} />
+            <Route path="/blogs/:blogId" element={<SingleBlog />} />
+            <Route path="/blogs" element={<BlogsList />} />
             <Route path="/" element={<BlogsList />} />
           </Routes>
         </Router>
