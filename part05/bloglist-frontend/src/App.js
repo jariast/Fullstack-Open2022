@@ -12,12 +12,12 @@ import {
   loginUser,
   selectLoggedUser,
   userLoggedIn,
-  userLoggedOut,
 } from './components/user/usersSlice';
 import UsersList from './components/user/UsersList';
 import User from './components/user/User';
 import { fetchBlogs } from './components/blog/blogsSlice';
 import SingleBlog from './components/blog/SingleBlog';
+import NavBar from './components/Navbar';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -58,11 +58,6 @@ const App = () => {
     }
   };
 
-  const handleLogout = () => {
-    window.localStorage.removeItem('user');
-    dispatch(userLoggedOut());
-  };
-
   return (
     <div>
       {user === null ? (
@@ -75,11 +70,8 @@ const App = () => {
         ></Login>
       ) : (
         <Router>
-          <h2>blogs</h2>
-          <p>{`${user.name} is logged in`}</p>
-          <button id="logout-button" onClick={handleLogout}>
-            Log out
-          </button>
+          <h2>Blogs App</h2>
+          <NavBar />
           <Routes>
             <Route path="/users/:userId" element={<User />} />
             <Route path="/users" element={<UsersList />} />
