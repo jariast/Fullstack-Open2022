@@ -75,7 +75,7 @@ const blogsSlice = createSlice({
 
         blogsAdapter.updateOne(state, {
           id: updatedBlog.id,
-          changes: { likes: updatedBlog.likes++ },
+          changes: { likes: updatedBlog.likes },
         });
       })
       .addCase(deleteBlog.fulfilled, blogsAdapter.removeOne);
