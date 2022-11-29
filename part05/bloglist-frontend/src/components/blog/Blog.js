@@ -1,4 +1,5 @@
-import styled from 'styled-components';
+import Card from 'react-bootstrap/Card';
+
 import { selectBlogById } from './blogsSlice';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -7,22 +8,18 @@ const Blog = ({ blogId }) => {
   const blog = useSelector((state) => selectBlogById(state, blogId));
 
   return (
-    <Wrapper data-testid="blogWrapper">
-      <div>
-        <Link to={`/blogs/${blog.id}`}>
-          <span>
-            {blog.title} {blog.author}
-          </span>
-        </Link>
-        <p>{`Likes: ${blog.likes}`}</p>
-      </div>
-    </Wrapper>
+    <Card style={{ marginBottom: '20px' }}>
+      <Card.Body>
+        <Card.Title>
+          <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+        </Card.Title>
+        <Card.Text>Author: {blog.author}</Card.Text>
+      </Card.Body>
+      <Card.Footer>
+        <small className="text-muted">Likes: {blog.likes}</small>
+      </Card.Footer>
+    </Card>
   );
 };
-
-const Wrapper = styled.div`
-  border: 1px solid gray;
-  margin-bottom: 10px;
-`;
 
 export default Blog;

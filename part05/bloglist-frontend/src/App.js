@@ -18,6 +18,7 @@ import User from './components/user/User';
 import { fetchBlogs } from './components/blog/blogsSlice';
 import SingleBlog from './components/blog/SingleBlog';
 import NavBar from './components/Navbar';
+import { Container } from 'react-bootstrap';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -59,7 +60,7 @@ const App = () => {
   };
 
   return (
-    <div>
+    <Container>
       {user === null ? (
         <Login
           submitHandler={handleLogin}
@@ -83,7 +84,7 @@ const App = () => {
       )}
 
       <Notification />
-    </div>
+    </Container>
   );
 };
 
