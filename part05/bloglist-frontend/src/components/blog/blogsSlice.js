@@ -33,7 +33,16 @@ export const likeBlog = createAsyncThunk(
   'blogs/likeBlog',
   async (blogToUpdate) => {
     blogToUpdate.likes++;
-    const response = await blogsService.updateLikes(blogToUpdate);
+    const response = await blogsService.updateBlog(blogToUpdate);
+    return response;
+  }
+);
+
+export const commentBlog = createAsyncThunk(
+  'blogs/commentBlog',
+  async ({ blogToUpdate, comment }) => {
+    blogToUpdate.comments = blogToUpdate.comments.concat(comment);
+    const response = await blogsService.updateBlog(blogToUpdate);
     return response;
   }
 );
@@ -78,7 +87,15 @@ const blogsSlice = createSlice({
           changes: { likes: updatedBlog.likes },
         });
       })
-      .addCase(deleteBlog.fulfilled, blogsAdapter.removeOne);
+      .addCase(deleteBlog.fulfilled, blogsAdapter.removeOne)
+      .addCase(commentBlog.fulfilled, (state, action) => {
+        const updatedBlog = action.payload;
+
+        blogsAdapter.updateOne(state, {
+          id: updatedBlog.id,
+          changes: { comments: updatedBlog.comments },
+        });
+      });
   },
 });
 

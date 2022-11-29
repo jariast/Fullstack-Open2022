@@ -19,7 +19,7 @@ const createBlog = async (blog) => {
   return response.data;
 };
 
-const updateLikes = async (blogToUpdate) => {
+const updateBlog = async (blogToUpdate) => {
   const response = await axios.put(
     `${baseUrl}/${blogToUpdate.id}`,
     blogToUpdate
@@ -35,7 +35,7 @@ const deleteBlog = async (blogId) => {
 const blogsService = {
   getAll,
   createBlog,
-  updateLikes,
+  updateBlog,
   deleteBlog,
   setHeaderConfig,
 };

@@ -2,7 +2,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { showNotification } from '../notification/notificationSlice';
 import { selectLoggedUser, selectUserById } from '../user/usersSlice';
-import { deleteBlog, likeBlog, selectBlogById } from './blogsSlice';
+import {
+  commentBlog,
+  deleteBlog,
+  likeBlog,
+  selectBlogById,
+} from './blogsSlice';
+import CommentForm from './CommentForm';
 
 const SingleBlog = () => {
   const dispatch = useDispatch();
@@ -22,6 +28,11 @@ const SingleBlog = () => {
   const handleLikeBlog = (blogTolike) => {
     const copy = { ...blogTolike };
     dispatch(likeBlog(copy));
+  };
+
+  const handleCommentBlog = (comment) => {
+    const copy = { ...blog };
+    dispatch(commentBlog({ blogToUpdate: copy, comment }));
   };
 
   const handleBlogDeletion = async (blog) => {
@@ -65,6 +76,15 @@ const SingleBlog = () => {
         </button>
       )}
       <p>{creator && `Added by ${creator.name}`}</p>
+      <h2>Comments</h2>
+      <CommentForm commentBlogHandler={handleCommentBlog}></CommentForm>
+      <ul>
+        {blog.comments.map((comment, index) => (
+          <li key={index}>{comment}</li>
+        ))}
+      </ul>
+      {/* This "hack" for the key seems to indicate that I used the
+      wrong approach for implementing comments */}
     </>
   );
 };
