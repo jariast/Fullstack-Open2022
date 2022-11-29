@@ -1,131 +1,66 @@
-import { useState, useEffect, useRef } from 'react';
-import Blog from './components/Blog';
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import Login from './components/Login';
-import BlogForm from './components/BlogsForm';
-import Notification from './components/Notification';
 import blogService from './services/blogs';
-import loginService from './services/login';
-import Togglable from './components/Togglable';
+import Notification from './components/notification/Notification';
+import { showNotification } from './components/notification/notificationSlice';
+import BlogsList from './components/blog/BlogsList';
+import {
+  fetchUsers,
+  loginUser,
+  selectLoggedUser,
+  userLoggedIn,
+} from './components/user/usersSlice';
+import UsersList from './components/user/UsersList';
+import User from './components/user/User';
+import { fetchBlogs } from './components/blog/blogsSlice';
+import SingleBlog from './components/blog/SingleBlog';
+import NavBar from './components/Navbar';
+import { Container } from 'react-bootstrap';
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const [user, setUser] = useState(null);
-  const [notificationMsg, setNotificationMsg] = useState('');
-  const [isNotificationError, setIsNotificationError] = useState(false);
-  const blogFormRef = useRef();
-  const sortByLikes = (blog1, blog2) => blog2.likes - blog1.likes;
-
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs.sort(sortByLikes)));
-  }, []);
+  const user = useSelector(selectLoggedUser);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('user');
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
-      setUser(user);
+      dispatch(userLoggedIn(user));
       blogService.setHeaderConfig(user.token);
     }
   }, []);
 
+  useEffect(() => {
+    dispatch(fetchBlogs());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, [dispatch]);
+
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const loginResponse = await loginService.login(username, password);
-      setUser(loginResponse);
-      window.localStorage.setItem('user', JSON.stringify(loginResponse));
+      const response = await dispatch(
+        loginUser({ username, password })
+      ).unwrap();
+      window.localStorage.setItem('user', JSON.stringify(response));
       setUsername('');
       setPassword('');
-      blogService.setHeaderConfig(loginResponse.token);
+      blogService.setHeaderConfig(response.token);
     } catch (error) {
-      console.log('Login error', error);
-      showNotification(error.response.data.error, true);
+      dispatch(showNotification(error, true));
     }
   };
-
-  const handleLogout = () => {
-    window.localStorage.removeItem('user');
-    setUser(null);
-  };
-
-  const showNotification = (msg, isError) => {
-    setNotificationMsg(msg);
-    setIsNotificationError(isError);
-    setTimeout(() => {
-      setNotificationMsg('');
-    }, 3000);
-  };
-
-  const handleBlogCreation = async (newBlog) => {
-    try {
-      blogFormRef.current.toggleVisibility();
-      const createdBlog = await blogService.createBlog(user.token, newBlog);
-
-      setBlogs(blogs.concat(createdBlog));
-      showNotification(
-        `A new blog "${createdBlog.title}" by ${createdBlog.author} added`
-      );
-    } catch (error) {
-      console.log('Blog creation error', error);
-      showNotification(error.response.data.error, true);
-    }
-  };
-
-  const handleBlogLike = async (blogToLike) => {
-    try {
-      const updatedBlog = await blogService.updateLikes(
-        blogToLike.id,
-        blogToLike
-      );
-      setBlogs(
-        blogs
-          .map((blog) => (blog.id === updatedBlog.id ? updatedBlog : blog))
-          .sort(sortByLikes)
-      );
-    } catch (error) {
-      console.log('Blog liking error', error);
-      showNotification(error.response.data.error, true);
-    }
-  };
-
-  const handleBlogDeletion = async (blogId) => {
-    try {
-      await blogService.deleteBlog(blogId);
-      setBlogs(blogs.filter((blog) => blog.id !== blogId));
-    } catch (error) {
-      console.log('Error Deleting blog', error);
-      showNotification(error.response.data.error, true);
-    }
-  };
-
-  const blogsList = () => (
-    <>
-      <h2>blogs</h2>
-      <p>{`${user.name} is logged in`}</p>
-      <button id="logout-button" onClick={handleLogout}>
-        Log out
-      </button>
-      <Togglable buttonLabel="New Blog" ref={blogFormRef}>
-        <BlogForm addBloghandler={handleBlogCreation}></BlogForm>
-      </Togglable>
-
-      {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          updateBlogHandler={handleBlogLike}
-          user={user}
-          deleteBlogHandler={handleBlogDeletion}
-        />
-      ))}
-    </>
-  );
 
   return (
-    <div>
+    <Container>
       {user === null ? (
         <Login
           submitHandler={handleLogin}
@@ -135,11 +70,21 @@ const App = () => {
           newPasswordHandler={({ target }) => setPassword(target.value)}
         ></Login>
       ) : (
-        blogsList()
+        <Router>
+          <h2>Blogs App</h2>
+          <NavBar />
+          <Routes>
+            <Route path="/users/:userId" element={<User />} />
+            <Route path="/users" element={<UsersList />} />
+            <Route path="/blogs/:blogId" element={<SingleBlog />} />
+            <Route path="/blogs" element={<BlogsList />} />
+            <Route path="/" element={<BlogsList />} />
+          </Routes>
+        </Router>
       )}
 
-      <Notification message={notificationMsg} isError={isNotificationError} />
-    </div>
+      <Notification />
+    </Container>
   );
 };
 

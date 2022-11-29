@@ -13,14 +13,17 @@ const getAll = async () => {
   return response.data;
 };
 
-const createBlog = async (token, blog) => {
+const createBlog = async (blog) => {
   const response = await axios.post(baseUrl, blog, config);
 
   return response.data;
 };
 
-const updateLikes = async (blogId, blogToUpdate) => {
-  const response = await axios.put(`${baseUrl}/${blogId}`, blogToUpdate);
+const updateBlog = async (blogToUpdate) => {
+  const response = await axios.put(
+    `${baseUrl}/${blogToUpdate.id}`,
+    blogToUpdate
+  );
   return response.data;
 };
 
@@ -32,7 +35,7 @@ const deleteBlog = async (blogId) => {
 const blogsService = {
   getAll,
   createBlog,
-  updateLikes,
+  updateBlog,
   deleteBlog,
   setHeaderConfig,
 };
