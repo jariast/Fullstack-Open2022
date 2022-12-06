@@ -1,4 +1,7 @@
-const { ApolloServer, gql } = require('apollo-server');
+const { ApolloServer } = require('@apollo/server');
+const { startStandaloneServer } = require('@apollo/server/standalone');
+
+const gql = require('graphql-tag');
 
 let authors = [
   {
@@ -93,12 +96,21 @@ let books = [
 ];
 
 const typeDefs = gql`
+  type Book {
+    title: String!
+  }
+
   type Query {
+    bookCount: Int!
+    authorCount: Int!
   }
 `;
 
 const resolvers = {
-  Query: {},
+  Query: {
+    bookCount: () => books.length,
+    authorCount: () => authors.length,
+  },
 };
 
 const server = new ApolloServer({
@@ -106,6 +118,8 @@ const server = new ApolloServer({
   resolvers,
 });
 
-server.listen().then(({ url }) => {
+startStandaloneServer(server, {
+  listen: { port: 4000 },
+}).then(({ url }) => {
   console.log(`Server ready at ${url}`);
 });
