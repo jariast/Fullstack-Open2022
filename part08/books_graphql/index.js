@@ -1,6 +1,24 @@
 const { ApolloServer } = require('@apollo/server');
 const { startStandaloneServer } = require('@apollo/server/standalone');
 
+require('dotenv').config();
+
+const mongoose = require('mongoose');
+
+const Author = require('./models/author');
+const Book = require('./models/book');
+
+const MONGODB_URI = process.env.MONGODB_URI;
+
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
+    console.log('connected to MongoDB');
+  })
+  .catch((error) => {
+    console.log('error connection to MongoDB:', error.message);
+  });
+
 const { v1: uuid } = require('uuid');
 
 const gql = require('graphql-tag');
