@@ -126,7 +126,7 @@ const typeDefs = gql`
   type Book {
     title: String!
     published: Int!
-    author: String!
+    author: Author!
     id: ID!
     genres: [String]!
   }
@@ -134,7 +134,7 @@ const typeDefs = gql`
   type Query {
     bookCount: Int!
     authorCount: Int!
-    allBooks(authorName: String, genre: String): [Book!]!
+    allBooks: [Book!]!
     allAuthors: [Author!]
   }
 
@@ -151,13 +151,14 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
-    allBooks: (__, { authorName, genre }) =>
-      books
-        .filter((book) => (authorName ? book.author === authorName : book))
-        .filter((book) => (genre ? book.genres.includes(genre) : book)),
-    allAuthors: () => authors,
+    bookCount: async () => Book.collection.countDocuments(),
+    authorCount: async () => Author.collection.countDocuments(),
+    // allBooks: (__, { authorName, genre }) =>
+    //   books
+    //     .filter((book) => (authorName ? book.author === authorName : book))
+    //     .filter((book) => (genre ? book.genres.includes(genre) : book)),
+    allBooks: async () => Book.find({}),
+    allAuthors: async () => Author.find({}),
   },
   Author: {
     bookCount: (parent) =>
@@ -167,16 +168,20 @@ const resolvers = {
       ),
   },
   Mutation: {
-    addBook: (parent, args) => {
-      const book = { ...args, id: uuid() };
-      books = books.concat(book);
-
-      if (!authors.find((author) => author.name === args.author)) {
-        const author = { name: args.author, id: uuid() };
-        authors = authors.concat(author);
+    addBook: async (__, args) => {
+      const existingAuthor = await Author.findOne({ name: args.author });
+      let authorId = existingAuthor._id;
+      if (!existingAuthor) {
+        const newAuthor = new Author({ name: args.author });
+        await newAuthor.save();
+        authorId = newAuthor._id;
       }
+      const bookObject = { ...args };
+      bookObject.author = authorId;
 
-      return book;
+      const book = new Book({ ...bookObject });
+
+      return book.save();
     },
     editAuthor: (__, args) => {
       const author = authors.find((author) => author.name === args.name);
