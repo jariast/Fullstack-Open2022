@@ -91,17 +91,12 @@ const resolvers = {
 
       return book.save();
     },
-    editAuthor: (__, args) => {
-      const author = authors.find((author) => author.name === args.name);
-      if (!author) {
-        return null;
-      }
+    editAuthor: async (__, { name, setBornTo }) => {
+      const author = await Author.findOne({ name });
 
-      const updatedAuthor = { ...author, born: args.setBornTo };
-      authors = authors.map((author) =>
-        author.name === args.name ? updatedAuthor : author
-      );
-      return updatedAuthor;
+      author.born = setBornTo;
+
+      return author.save();
     },
   },
 };
