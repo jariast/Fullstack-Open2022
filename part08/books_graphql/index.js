@@ -69,11 +69,7 @@ const resolvers = {
     allAuthors: async () => Author.find({}),
   },
   Author: {
-    bookCount: (parent) =>
-      books.reduce(
-        (total, book) => (book.author === parent.name ? total + 1 : total),
-        0
-      ),
+    bookCount: async (parent) => Book.countDocuments({ author: parent.id }),
   },
   Mutation: {
     addBook: async (__, args) => {
