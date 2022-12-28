@@ -1,4 +1,6 @@
 const { ApolloServer } = require('@apollo/server');
+const { GraphQLError } = require('graphql');
+
 const { startStandaloneServer } = require('@apollo/server/standalone');
 
 require('dotenv').config();
@@ -64,7 +66,7 @@ const resolvers = {
       const queryObject = {};
       author ? (queryObject.author = author.id) : null;
       genre ? (queryObject.genres = genre) : null;
-      return Book.find(queryObject);
+      return Book.find(queryObject).populate('author');
     },
     allAuthors: async () => Author.find({}),
   },
@@ -75,17 +77,25 @@ const resolvers = {
     addBook: async (__, args) => {
       const existingAuthor = await Author.findOne({ name: args.author });
       let authorId = existingAuthor ? existingAuthor._id : '';
-      if (!existingAuthor) {
-        const newAuthor = new Author({ name: args.author });
-        await newAuthor.save();
-        authorId = newAuthor._id;
+      try {
+        if (!existingAuthor) {
+          const newAuthor = new Author({ name: args.author });
+          await newAuthor.save();
+          authorId = newAuthor._id;
+        }
+        const bookObject = { ...args };
+        bookObject.author = authorId;
+
+        const book = new Book({ ...bookObject });
+
+        return (await book.save()).populate('author');
+      } catch (error) {
+        throw new GraphQLError(error.message, {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+          },
+        });
       }
-      const bookObject = { ...args };
-      bookObject.author = authorId;
-
-      const book = new Book({ ...bookObject });
-
-      return book.save();
     },
     editAuthor: async (__, { name, setBornTo }) => {
       const author = await Author.findOne({ name });
