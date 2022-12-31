@@ -92,7 +92,18 @@ const resolvers = {
     bookCount: async (parent) => Book.countDocuments({ author: parent.id }),
   },
   Mutation: {
-    addBook: async (__, args) => {
+    addBook: async (__, args, { bearerToken }) => {
+      const loggedUser = await extractLoggedInUser(bearerToken);
+      if (!loggedUser) {
+        throw new GraphQLError('User is not authenticated', {
+          extensions: {
+            code: 'UNAUTHENTICATED',
+
+            http: { status: 401 },
+          },
+        });
+      }
+
       const existingAuthor = await Author.findOne({ name: args.author });
       let authorId = existingAuthor ? existingAuthor._id : '';
       try {
@@ -115,7 +126,18 @@ const resolvers = {
         });
       }
     },
-    editAuthor: async (__, { name, setBornTo }) => {
+    editAuthor: async (__, { name, setBornTo }, { bearerToken }) => {
+      const loggedUser = await extractLoggedInUser(bearerToken);
+      if (!loggedUser) {
+        throw new GraphQLError('User is not authenticated', {
+          extensions: {
+            code: 'UNAUTHENTICATED',
+
+            http: { status: 401 },
+          },
+        });
+      }
+
       const author = await Author.findOne({ name });
 
       author.born = setBornTo;
