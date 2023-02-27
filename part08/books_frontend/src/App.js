@@ -6,11 +6,13 @@ import Authors from './components/Authors';
 import Books from './components/Books';
 import Login from './components/Login';
 import NewBook from './components/NewBook';
+import { useApolloClient } from '@apollo/client';
 
 const App = () => {
   const [page, setPage] = useState('authors');
   const [error, setError] = useState('');
   const [token, setToken] = useLocalStorageState('books-app-user-token', null);
+  const client = useApolloClient();
 
   const handleLogin = (token) => {
     setToken(token);
@@ -19,6 +21,7 @@ const App = () => {
 
   const handleLogout = () => {
     setToken(null);
+    client.resetStore(); //This purges the cache in case we have sensitive info in it.
   };
 
   return (

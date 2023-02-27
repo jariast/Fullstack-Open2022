@@ -5,14 +5,12 @@ import { LOGIN } from '../queries';
 const Login = ({ show, setError, handleLogin }) => {
   const [login, result] = useMutation(LOGIN, {
     onError: (error) => {
-      console.log('Error: ', error);
       setError(error.message);
     },
   });
 
   useEffect(() => {
     if (result.data) {
-      console.log('Result: ', result);
       const token = result.data.login.value;
       handleLogin(token);
     }
