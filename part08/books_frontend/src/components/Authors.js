@@ -7,11 +7,11 @@ const Authors = (props) => {
   const [authorName, setAuthorName] = useState('');
   const [birthYear, setBirthYear] = useState('');
 
-  const [editAuthorBith] = useMutation(SET_AUTHOR_BIRTH);
+  const [editAuthorBirth] = useMutation(SET_AUTHOR_BIRTH);
 
   const editAuthor = (event) => {
     event.preventDefault();
-    editAuthorBith({
+    editAuthorBirth({
       variables: { name: authorName, setBornTo: parseInt(birthYear) },
     });
 
