@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { ALL_BOOKS } from '../queries';
+import { filterByGenre } from '../Utils/utils';
 
 const Books = (props) => {
   const { data, loading } = useQuery(ALL_BOOKS);
@@ -8,7 +9,7 @@ const Books = (props) => {
 
   useEffect(() => {
     if (data) {
-      setFilteredBooks(data.allBooks);
+      setFilteredBooks(filterByGenre(data.allBooks));
     }
   }, [data]);
 
@@ -32,12 +33,8 @@ const Books = (props) => {
     return uniqueGenres;
   }
 
-  function filterByGenre(genre = 'All genres') {
-    if (genre === 'All genres') {
-      setFilteredBooks(allBooks);
-      return;
-    }
-    setFilteredBooks(allBooks.filter((book) => book.genres.includes(genre)));
+  function handleFilterClick(genre) {
+    setFilteredBooks(filterByGenre(allBooks, genre));
   }
 
   return (
@@ -62,7 +59,7 @@ const Books = (props) => {
       </table>
       <ul>
         {genres.map((genre) => (
-          <button key={genre} onClick={() => filterByGenre(genre)}>
+          <button key={genre} onClick={() => handleFilterClick(genre)}>
             {genre}
           </button>
         ))}

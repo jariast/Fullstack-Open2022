@@ -21,17 +21,23 @@ function useLocalStorageState(
     return typeof defaultValue === 'function' ? defaultValue() : defaultValue;
   });
 
-  const prevKeyRef = useRef(key);
+  // Had to comment out this code because it was creating an issue with
+  // the Apollo client context.
 
-  // Check the example at src/examples/local-state-key-change.js to visualize a key change
-  useEffect(() => {
-    const prevKey = prevKeyRef.current;
-    if (prevKey !== key) {
-      window.localStorage.removeItem(prevKey);
-    }
-    prevKeyRef.current = key;
-    window.localStorage.setItem(key, serialize(state));
-  }, [key, state, serialize]);
+  // const prevKeyRef = useRef(key);
+
+  // // Check the example at src/examples/local-state-key-change.js to visualize a key change
+  // useEffect(() => {
+  //   const prevKey = prevKeyRef.current;
+  //   if (prevKey !== key) {
+  //     window.localStorage.removeItem(prevKey);
+  //   }
+  //   prevKeyRef.current = key;
+  //   window.localStorage.setItem(key, serialize(state));
+  //   console.log('Set localstorage');
+  // }, [key, state, serialize]);
+
+  window.localStorage.setItem(key, serialize(state));
 
   return [state, setState];
 }
