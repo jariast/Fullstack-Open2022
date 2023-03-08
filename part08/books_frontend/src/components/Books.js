@@ -1,10 +1,13 @@
 import { useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
-import { ALL_BOOKS } from '../queries';
+import { ALL_GENRES, BOOK_BY_GENRE } from '../queries';
 import { filterByGenre } from '../Utils/utils';
 
 const Books = (props) => {
-  const { data, loading } = useQuery(ALL_BOOKS);
+  const { data, loading, refetch } = useQuery(BOOK_BY_GENRE, {
+    variables: { genre: null },
+  });
+  const { data: genres } = useQuery(ALL_GENRES);
   const [filteredBooks, setFilteredBooks] = useState([]);
 
   useEffect(() => {
@@ -19,22 +22,6 @@ const Books = (props) => {
 
   if (loading) {
     return <div>loading</div>;
-  }
-
-  const allBooks = data.allBooks;
-
-  const genres = extractGenres(data.allBooks);
-  genres.push('All genres');
-
-  function extractGenres(books = []) {
-    const bookGenres = books.map((book) => book.genres).flat();
-    const uniqueGenres = [...new Set(bookGenres)];
-
-    return uniqueGenres;
-  }
-
-  function handleFilterClick(genre) {
-    setFilteredBooks(filterByGenre(allBooks, genre));
   }
 
   return (
@@ -58,11 +45,13 @@ const Books = (props) => {
         </tbody>
       </table>
       <ul>
-        {genres.map((genre) => (
-          <button key={genre} onClick={() => handleFilterClick(genre)}>
+        {genres.allGenres.map((genre) => (
+          <button key={genre} onClick={() => refetch({ genre })}>
             {genre}
           </button>
         ))}
+
+        <button onClick={() => refetch({ genre: null })}>All Genres</button>
       </ul>
     </div>
   );
