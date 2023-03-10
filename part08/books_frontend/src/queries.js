@@ -31,6 +31,15 @@ export const ALL_BOOKS = gql`
   ${BOOK_DETAILS}
 `;
 
+export const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      ...BookDetails
+    }
+  }
+  ${BOOK_DETAILS}
+`;
+
 export const BOOK_BY_GENRE = gql`
   query AllBooks($genre: String) {
     allBooks(genre: $genre) {

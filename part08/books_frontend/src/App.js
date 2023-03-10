@@ -8,12 +8,20 @@ import Login from './components/Login';
 import NewBook from './components/NewBook';
 import { useApolloClient } from '@apollo/client';
 import { Recommendations } from './components/Recommendations';
+import { useSubscription } from '@apollo/client';
+import { BOOK_ADDED } from './queries';
 
 const App = () => {
   const [page, setPage] = useState('authors');
   const [error, setError] = useState('');
   const [token, setToken] = useLocalStorageState('books-app-user-token', null);
   const client = useApolloClient();
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      window.alert('Book added', data);
+    },
+  });
 
   const handleLogin = (token) => {
     setToken(token);
