@@ -15,12 +15,12 @@ try {
   const { weight, height } = parseConsoleArgs(process.argv);
   console.log(calculateBmi(weight, height));
 } catch (error: any) {
-  let errMsg = 'Something went wrong.';
-  if (error instanceof Error) {
-    errMsg += ' Error: ' + error.message;
-  }
-
-  console.log(errMsg);
+  // -----***** Commenting just we dont get an error in the console when running the server
+  // let errMsg = 'Something went wrong.';
+  // if (error instanceof Error) {
+  //   errMsg += ' Error: ' + error.message;
+  // }
+  // console.log(errMsg);
 }
 
 function calculateBmi(weight: number, height: number): string {
@@ -43,6 +43,7 @@ function calculateBmi(weight: number, height: number): string {
   } else if (bmi >= 40.0) {
     return BmiClassesLabels.Obese03;
   }
+  return 'You are a freak, you do not fit in any category!!';
 }
 
 function parseConsoleArgs(args: string[]): BmiValues {
@@ -74,3 +75,5 @@ interface BmiValues {
   weight: number;
   height: number;
 }
+
+export { calculateBmi };
