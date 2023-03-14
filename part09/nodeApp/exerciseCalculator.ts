@@ -1,4 +1,5 @@
 import { ExerciseInfo } from './interfaces/ExceriseInfo';
+import { getAverage } from './utils';
 
 function calculateExcercises(
   target: number,
@@ -22,11 +23,6 @@ function calculateExcercises(
 
 function hasTrainedThatDay(day: number) {
   return day !== 0;
-}
-
-function getAverage(numbersArr: number[]): number {
-  const arrSum = numbersArr.reduce((sum, number) => sum + number, 0);
-  return arrSum / numbersArr.length;
 }
 
 console.log('Calculate Ex: ', calculateExcercises(2, [3, 0, 2, 4.5, 0, 3, 1]));

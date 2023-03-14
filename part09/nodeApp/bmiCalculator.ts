@@ -1,3 +1,5 @@
+import { isNotNumber } from './utils';
+
 enum BmiClassesLabels {
   Under03 = 'Underweight (Severe thinness)',
   Under02 = 'Underweight (Moderate thinness)',
@@ -9,8 +11,22 @@ enum BmiClassesLabels {
   Obese03 = 'Obese (Class III)',
 }
 
-function calculateBmi(height: number, weight: number): string {
+try {
+  const { weight, height } = parseConsoleArgs(process.argv);
+  console.log(calculateBmi(weight, height));
+} catch (error: any) {
+  let errMsg = 'Something went wrong.';
+  if (error instanceof Error) {
+    errMsg += ' Error: ' + error.message;
+  }
+
+  console.log(errMsg);
+}
+
+function calculateBmi(weight: number, height: number): string {
   const bmi = (weight / height ** 2) * 10000; // We multiply by 100 because were given the height in cm, we also must multiply by another 100 because the index is a percentage
+
+  console.log('Labels: ', BmiClassesLabels);
 
   if (bmi < 16) {
     return BmiClassesLabels.Under03;
@@ -31,4 +47,33 @@ function calculateBmi(height: number, weight: number): string {
   }
 }
 
-console.log(calculateBmi(186, 79));
+// console.log(calculateBmi(186, 79));
+function parseConsoleArgs(args: string[]): BmiValues {
+  console.log('Args: ', args);
+
+  if (args.length < 4) {
+    throw new Error('Not enough arguments');
+  }
+  if (args.length > 4) {
+    throw new Error('Too many arguments');
+  }
+
+  if (isNotNumber(args[2]) || isNotNumber(args[3])) {
+    throw new Error('Please provide only numbers');
+  }
+  const weight = Number(args[2]);
+  const height = Number(args[3]);
+
+  if (weight > 0 && height > 0) {
+    return {
+      weight,
+      height,
+    };
+  } else {
+    throw new Error('Please provide only positive numbers');
+  }
+}
+interface BmiValues {
+  weight: number;
+  height: number;
+}
