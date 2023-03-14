@@ -47,8 +47,6 @@ function calculateBmi(weight: number, height: number): string {
 }
 
 function parseConsoleArgs(args: string[]): BmiValues {
-  console.log('Args: ', args);
-
   if (args.length < 4) {
     throw new Error('Not enough arguments');
   }
