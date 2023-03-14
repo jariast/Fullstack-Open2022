@@ -26,8 +26,6 @@ try {
 function calculateBmi(weight: number, height: number): string {
   const bmi = (weight / height ** 2) * 10000; // We multiply by 100 because were given the height in cm, we also must multiply by another 100 because the index is a percentage
 
-  console.log('Labels: ', BmiClassesLabels);
-
   if (bmi < 16) {
     return BmiClassesLabels.Under03;
   } else if (bmi >= 16.0 && bmi <= 16.9) {
@@ -47,7 +45,6 @@ function calculateBmi(weight: number, height: number): string {
   }
 }
 
-// console.log(calculateBmi(186, 79));
 function parseConsoleArgs(args: string[]): BmiValues {
   console.log('Args: ', args);
 
