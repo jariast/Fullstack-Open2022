@@ -14,7 +14,7 @@ enum BmiClassesLabels {
 try {
   const { weight, height } = parseConsoleArgs(process.argv);
   console.log(calculateBmi(weight, height));
-} catch (error: any) {
+} catch (error: unknown) {
   // -----***** Commenting just we dont get an error in the console when running the server
   // let errMsg = 'Something went wrong.';
   // if (error instanceof Error) {

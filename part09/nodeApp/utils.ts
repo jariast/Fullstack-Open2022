@@ -1,4 +1,4 @@
-const isNotNumber = (argument: any): boolean => isNaN(Number(argument));
+const isNotNumber = (argument: unknown): boolean => isNaN(Number(argument));
 
 const getAverage = (numbersarr: number[]) => {
   const arrsum = numbersarr.reduce((sum, number) => sum + number, 0);

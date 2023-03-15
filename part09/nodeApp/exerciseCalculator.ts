@@ -7,7 +7,7 @@ try {
     'Exercise Info: ',
     calculateExcercises(target, trainingHoursByDay)
   );
-} catch (error: any) {
+} catch (error: unknown) {
   let errMsg = 'Something went wrong.';
   if (error instanceof Error) {
     errMsg += ' Error: ' + error.message;
