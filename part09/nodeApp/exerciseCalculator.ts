@@ -8,12 +8,12 @@ try {
     calculateExcercises(target, trainingHoursByDay)
   );
 } catch (error: unknown) {
-  let errMsg = 'Something went wrong.';
-  if (error instanceof Error) {
-    errMsg += ' Error: ' + error.message;
-  }
-
-  console.log(errMsg);
+  // Commenting for the same reason as the BMI calculator exercise
+  // let errMsg = 'Something went wrong.';
+  // if (error instanceof Error) {
+  //   errMsg += ' Error: ' + error.message;
+  // }
+  // console.log(errMsg);
 }
 
 function parseConsoleArgs([
@@ -70,3 +70,5 @@ interface ExerciseValues {
   target: number;
   trainingHoursByDay: number[];
 }
+
+export { calculateExcercises };
