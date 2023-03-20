@@ -8,8 +8,8 @@ const getDiagnoses = (): Diagnose[] => {
 export const diagnoseService = {
   getDiagnoses,
 };
-/* In the course they export the functios using a default obejct like:
- export defaul{
+/* In the course they export the functions using a default obejct like:
+ export default{
     getDiagnoses
  }
 The issue with that approach is that in the consuming file Intellisense can't
