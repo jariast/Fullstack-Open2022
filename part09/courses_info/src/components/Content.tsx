@@ -1,4 +1,5 @@
 import { CoursePart } from '../types';
+import { Part } from './Part';
 
 interface ContentProps {
   courseParts: CoursePart[];
@@ -7,9 +8,7 @@ interface ContentProps {
 const Content = (props: ContentProps) => (
   <>
     {props.courseParts.map((coursePart) => (
-      <p key={crypto.randomUUID()}>
-        {coursePart.name} {coursePart.exerciseCount}
-      </p>
+      <Part key={crypto.randomUUID()} part={coursePart} />
     ))}
   </>
 );
