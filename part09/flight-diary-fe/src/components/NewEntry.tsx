@@ -1,7 +1,8 @@
 import axios from 'axios';
+import React from 'react';
 import { SyntheticEvent, useState } from 'react';
 import { diaryService } from '../service';
-import { DiaryEntry, NewEntry } from '../types';
+import { DiaryEntry, NewEntry, Visibility, Weather } from '../types';
 
 interface NewEntryFormProps {
   onEntryCreation: (createdEntry: DiaryEntry) => void;
@@ -9,11 +10,45 @@ interface NewEntryFormProps {
 
 const NewEntryForm = (props: NewEntryFormProps) => {
   const [date, setDate] = useState('');
-  const [visibility, setVisibility] = useState('');
-  const [weather, setWeather] = useState('');
+  const [visibility, setVisibility] = useState(Visibility.Good);
+  const [weather, setWeather] = useState(Weather.Sunny);
   const [comment, setComment] = useState('');
 
   const [error, setError] = useState('');
+
+  const weatherRadioButtons: JSX.Element[] = [];
+  Object.values(Weather).map((v) => {
+    weatherRadioButtons.push(
+      <React.Fragment key={v}>
+        <input
+          type="radio"
+          name="weather"
+          id={v}
+          value={v}
+          checked={v === weather}
+          onChange={() => setWeather(v)}
+        />
+        {v}
+      </React.Fragment>
+    );
+  });
+
+  const visibilityRadioButtons: JSX.Element[] = [];
+  Object.values(Visibility).map((v) => {
+    visibilityRadioButtons.push(
+      <React.Fragment key={v}>
+        <input
+          type="radio"
+          name="visibility"
+          id={v}
+          value={v}
+          checked={v === visibility}
+          onChange={() => setVisibility(v)}
+        />
+        {v}
+      </React.Fragment>
+    );
+  });
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -30,8 +65,8 @@ const NewEntryForm = (props: NewEntryFormProps) => {
       .then((data) => {
         props.onEntryCreation(data);
         setDate('');
-        setVisibility('');
-        setWeather('');
+        setVisibility(Visibility.Good);
+        setWeather(Weather.Sunny);
         setComment('');
       })
       .catch((error) => {
@@ -48,24 +83,14 @@ const NewEntryForm = (props: NewEntryFormProps) => {
       <label htmlFor="date">Date</label>
       <input
         id="date"
-        type="text"
+        type="date"
         value={date}
         onChange={(event) => setDate(event.target.value)}
       />
       <label htmlFor="visibility">Visibility</label>
-      <input
-        id="visibility"
-        type="text"
-        value={visibility}
-        onChange={(event) => setVisibility(event.target.value)}
-      />
+      <div>{visibilityRadioButtons}</div>
       <label htmlFor="weather">Weather</label>
-      <input
-        id="weather"
-        type="text"
-        value={weather}
-        onChange={(event) => setWeather(event.target.value)}
-      />
+      <div>{weatherRadioButtons}</div>
       <label htmlFor="comment">Comment</label>
       <input
         id="comment"
