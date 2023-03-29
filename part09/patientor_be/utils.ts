@@ -18,6 +18,7 @@ function toNewPatient(patientObj: unknown): NewPatient {
       occupation: parseString(patientObj.occupation),
       dateOfBirth: parseDate(patientObj.dateOfBirth),
       gender: parseGender(patientObj.gender),
+      entries: [],
     };
     return newPatient;
   }
