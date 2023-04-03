@@ -55,6 +55,19 @@ const PatientView = () => {
       </h2>
       <p>SSN: {patient?.ssn}</p>
       <p>Ocuupation: {patient?.occupation}</p>
+      <h3>Entries</h3>
+      {patient?.entries.map((entry) => (
+        <>
+          <p key={entry.id}>
+            <span>{entry.date}</span> <span>{entry.description}</span>
+          </p>
+          <ul>
+            {entry.diagnosisCodes?.map((code) => (
+              <li key={code}>{code}</li>
+            ))}
+          </ul>
+        </>
+      ))}
     </>
   );
   return (
