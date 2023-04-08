@@ -23,6 +23,7 @@ interface BaseEntry {
   date: string;
   specialist: string;
   diagnosisCodes?: Array<Diagnose['code']>;
+  diagnoses?: Diagnose[];
 }
 
 interface HealthCheckEntry extends BaseEntry {

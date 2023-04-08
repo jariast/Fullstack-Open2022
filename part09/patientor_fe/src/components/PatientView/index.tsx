@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Diagnose, Gender, Patient } from '../../types';
 import patientService from '../../services/patients';
 import axios from 'axios';
 import { Female, Male, Transgender } from '@mui/icons-material';
+import { EntryDetails } from '../EntryDetails';
+import { Box } from '@mui/material';
 
 interface Props {
   diagnoses: Diagnose[];
@@ -52,11 +54,16 @@ const PatientView = ({ diagnoses }: Props) => {
       break;
   }
 
-  function getDiagnoseName(code: Diagnose['code']) {
-    const diagnose = diagnoses.find((d) => {
-      return d.code === code;
+  function buildDiagnosesArray(
+    diagnosesCodes: Array<Diagnose['code']>
+  ): Diagnose[] {
+    return diagnosesCodes.map((code) => {
+      const diagnosis = diagnoses.find((d) => d.code === code);
+      if (!diagnosis) {
+        throw new Error('Diagnosis error');
+      }
+      return { ...diagnosis };
     });
-    return diagnose ? diagnose.name : '';
   }
 
   const content = patient ? (
@@ -67,20 +74,15 @@ const PatientView = ({ diagnoses }: Props) => {
       <p>SSN: {patient?.ssn}</p>
       <p>Ocuupation: {patient?.occupation}</p>
       <h3>Entries</h3>
-      {patient?.entries.map((entry) => (
-        <React.Fragment key={entry.id}>
-          <p>
-            <span>{entry.date}</span> <span>{entry.description}</span>
-          </p>
-          <ul>
-            {entry.diagnosisCodes?.map((code) => (
-              <li key={code}>
-                {code} {getDiagnoseName(code)}
-              </li>
-            ))}
-          </ul>
-        </React.Fragment>
-      ))}
+      {patient?.entries.map((entry) => {
+        entry.diagnosisCodes &&
+          (entry.diagnoses = buildDiagnosesArray(entry.diagnosisCodes));
+        return (
+          <Box key={entry.id}>
+            <EntryDetails entry={entry} />
+          </Box>
+        );
+      })}
     </>
   ) : (
     ''
