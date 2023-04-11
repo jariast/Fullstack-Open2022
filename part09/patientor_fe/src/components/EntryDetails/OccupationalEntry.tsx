@@ -1,4 +1,4 @@
-import { LocalHospital } from '@mui/icons-material';
+import { Work } from '@mui/icons-material';
 import {
   Card,
   CardContent,
@@ -10,20 +10,23 @@ import {
 } from '@mui/material';
 import { Entry } from '../../types';
 
-type ExtractedHospitalEntry = Extract<Entry, { type: 'Hospital' }>;
+type ExtractedHospitalEntry = Extract<
+  Entry,
+  { type: 'OccupationalHealthcare' }
+>;
 
 interface Props {
   entry: ExtractedHospitalEntry;
 }
 
-function HospitalEntry({ entry }: Props) {
+function OccupationlalEntry({ entry }: Props) {
   return (
     <Card>
       <CardHeader
         title={
           <>
             {entry.date} - {entry.specialist}
-            <LocalHospital></LocalHospital>
+            <Work></Work>
           </>
         }
       />
@@ -32,7 +35,11 @@ function HospitalEntry({ entry }: Props) {
           {entry.description}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Discharge: {`${entry.discharge.date} - ${entry.discharge.criteria}`}
+          Employer: {entry.employerName}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Sickleave:{' '}
+          {`${entry.sickLeave?.startDate} - ${entry.sickLeave?.endDate}`}
         </Typography>
         <ul>
           {entry.diagnoses?.map((d) => (
@@ -48,4 +55,4 @@ function HospitalEntry({ entry }: Props) {
   );
 }
 
-export { HospitalEntry };
+export { OccupationlalEntry };

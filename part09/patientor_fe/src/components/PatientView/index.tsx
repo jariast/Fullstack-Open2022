@@ -73,7 +73,7 @@ const PatientView = ({ diagnoses }: Props) => {
       </h2>
       <p>SSN: {patient?.ssn}</p>
       <p>Ocuupation: {patient?.occupation}</p>
-      <h3>Entries</h3>
+      {patient.entries.length > 0 && <h3>Entries</h3>}
       {patient?.entries.map((entry) => {
         entry.diagnosisCodes &&
           (entry.diagnoses = buildDiagnosesArray(entry.diagnosisCodes));
