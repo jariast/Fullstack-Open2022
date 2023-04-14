@@ -1,4 +1,5 @@
 import { Entry } from '../../types';
+import { HealthCheckEntry } from './HealthCheckEntry';
 import { HospitalEntry } from './HospitalEntry';
 import { OccupationlalEntry } from './OccupationalEntry';
 
@@ -13,10 +14,19 @@ function EntryDetails({ entry }: Props) {
 
     case 'OccupationalHealthcare':
       return <OccupationlalEntry entry={entry} />;
-    // TODO: Remember to do the exhaustive check
+
+    case 'HealthCheck':
+      return <HealthCheckEntry entry={entry} />;
+
     default:
-      return null;
+      return assertNever(entry);
   }
 }
 
 export { EntryDetails };
+
+function assertNever(value: never): never {
+  throw new Error(
+    `Unhandled discriminated union member: ${JSON.stringify(value)}`
+  );
+}
