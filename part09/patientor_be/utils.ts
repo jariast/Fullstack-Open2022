@@ -1,4 +1,10 @@
-import { Gender, NewPatient } from './src/types';
+import {
+  Diagnose,
+  Gender,
+  HealthCheckRating,
+  NewEntry,
+  NewPatient,
+} from './src/types';
 
 function toNewPatient(patientObj: unknown): NewPatient {
   if (!patientObj || typeof patientObj !== 'object') {
@@ -25,6 +31,70 @@ function toNewPatient(patientObj: unknown): NewPatient {
   throw new Error('Incorrect patient data: some required fields are missing');
 }
 
+function toNewEntry(entryObj: unknown): NewEntry {
+  if (!entryObj || typeof entryObj !== 'object') {
+    throw new Error('Incorrect or missing data');
+  }
+
+  if (
+    'type' in entryObj &&
+    'description' in entryObj &&
+    'date' in entryObj &&
+    'specialist' in entryObj
+  ) {
+    switch (entryObj.type) {
+      case 'HealthCheck':
+        if ('healthCheckRating' in entryObj) {
+          const newHealthCheckEntry: NewEntry = {
+            description: parseString(entryObj.description),
+            date: parseDate(entryObj.date),
+            specialist: parseString(entryObj.specialist),
+            diagnosisCodes: parseDiagonsisCodes(entryObj),
+            type: entryObj.type,
+            healthCheckRating: parseHealthRating(entryObj.healthCheckRating),
+          };
+          return newHealthCheckEntry;
+        }
+        break;
+
+      case 'OccupationalHealthcare':
+        if ('employerName' in entryObj) {
+          const newOccupationalEntry: NewEntry = {
+            description: parseString(entryObj.description),
+            date: parseDate(entryObj.date),
+            specialist: parseString(entryObj.specialist),
+            diagnosisCodes: parseDiagonsisCodes(entryObj),
+            type: entryObj.type,
+            employerName: parseString(entryObj.employerName),
+            ...('sickLeave' in entryObj && {
+              sickLeave: parseSickLeave(entryObj.sickLeave),
+            }), // Conditionally add sickLeave if the request has it
+          };
+          return newOccupationalEntry;
+        }
+        break;
+
+      case 'Hospital':
+        if ('discharge' in entryObj) {
+          const newHospitalEntry: NewEntry = {
+            description: parseString(entryObj.description),
+            date: parseDate(entryObj.date),
+            specialist: parseString(entryObj.specialist),
+            diagnosisCodes: parseDiagonsisCodes(entryObj),
+            type: entryObj.type,
+            discharge: parseDischarge(entryObj.discharge),
+          };
+          return newHospitalEntry;
+        }
+        break;
+
+      default: //TODO review this fallthrough case after submitting
+        break;
+    }
+  }
+  throw new Error('Incorrect Entry data: some required fields are missing');
+}
+
 function parseString(name: unknown): string {
   if (!isString(name)) {
     throw new Error('Incorrect Name');
@@ -46,8 +116,61 @@ function parseGender(gender: unknown): Gender {
   return gender;
 }
 
+function parseHealthRating(rating: unknown): HealthCheckRating {
+  if (!isNumber(rating) || isHealthCheckRating(rating)) {
+    throw new Error(`Incorrect Health Rating: ${rating}`);
+  }
+  return rating;
+}
+
+function parseDiagonsisCodes(object: unknown): Array<Diagnose['code']> {
+  if (!object || typeof object !== 'object' || !('diagnosisCodes' in object)) {
+    return [] as Array<Diagnose['code']>;
+  }
+  return object.diagnosisCodes as Array<Diagnose['code']>;
+}
+
+// TODO Explain in Obsidian
+function parseSickLeave(object: unknown): {
+  startDate: string;
+  endDate: string;
+} {
+  if (
+    !object ||
+    typeof object !== 'object' ||
+    !('startDate' in object) ||
+    !('endDate' in object)
+  ) {
+    throw new Error(`Incorrect Sick Leave : ${object}`);
+  }
+  return {
+    startDate: parseDate(object.startDate),
+    endDate: parseDate(object.endDate),
+  };
+}
+
+// TODO Explain in Obsidian
+function parseDischarge(object: unknown): { date: string; criteria: string } {
+  if (
+    !object ||
+    typeof object !== 'object' ||
+    !('date' in object) ||
+    !('criteria' in object)
+  ) {
+    throw new Error(`Incorrect Discharge: ${object}`);
+  }
+  return {
+    date: parseDate(object.date),
+    criteria: parseString(object.criteria),
+  };
+}
+
 function isString(text: unknown): text is string {
   return typeof text === 'string' || text instanceof String;
+}
+
+function isNumber(text: unknown): text is number {
+  return typeof text === 'number';
 }
 
 function isDate(date: string): boolean {
@@ -60,4 +183,15 @@ function isGender(param: string): param is Gender {
     .includes(param);
 }
 
-export { toNewPatient };
+// TODO: Explain this in Obsidian
+function isHealthCheckRating(param: number): param is HealthCheckRating {
+  return Object.values(HealthCheckRating)
+    .filter((v) => !isNaN(Number(v)))
+    .includes(param);
+}
+function assertNever(value: never): never {
+  throw new Error(
+    `Unhandled discriminated union member: ${JSON.stringify(value)}`
+  );
+}
+export { toNewPatient, toNewEntry, assertNever };
