@@ -181,7 +181,6 @@ function isGender(param: string): param is Gender {
     .includes(param);
 }
 
-// TODO: Explain this in Obsidian
 function isHealthCheckRating(param: number): param is HealthCheckRating {
   return Object.values(HealthCheckRating)
     .filter((v) => !isNaN(Number(v)))
