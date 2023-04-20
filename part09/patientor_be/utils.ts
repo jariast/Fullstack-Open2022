@@ -130,7 +130,6 @@ function parseDiagonsisCodes(object: unknown): Array<Diagnose['code']> {
   return object.diagnosisCodes as Array<Diagnose['code']>;
 }
 
-// TODO Explain in Obsidian
 function parseSickLeave(object: unknown): {
   startDate: string;
   endDate: string;
@@ -149,7 +148,6 @@ function parseSickLeave(object: unknown): {
   };
 }
 
-// TODO Explain in Obsidian
 function parseDischarge(object: unknown): { date: string; criteria: string } {
   if (
     !object ||
@@ -189,6 +187,7 @@ function isHealthCheckRating(param: number): param is HealthCheckRating {
     .filter((v) => !isNaN(Number(v)))
     .includes(param);
 }
+
 function assertNever(value: never): never {
   throw new Error(
     `Unhandled discriminated union member: ${JSON.stringify(value)}`
