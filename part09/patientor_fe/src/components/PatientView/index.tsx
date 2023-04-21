@@ -5,7 +5,8 @@ import patientService from '../../services/patients';
 import axios from 'axios';
 import { Female, Male, Transgender } from '@mui/icons-material';
 import { EntryDetails } from '../EntryDetails';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import { AddEntryForm } from './AddEntryForm';
 
 interface Props {
   diagnoses: Diagnose[];
@@ -73,6 +74,11 @@ const PatientView = ({ diagnoses }: Props) => {
       </h2>
       <p>SSN: {patient?.ssn}</p>
       <p>Ocuupation: {patient?.occupation}</p>
+      <Box>
+        <Typography variant="h4">Add New Entry</Typography>
+        <AddEntryForm />
+      </Box>
+
       {patient.entries.length > 0 && <h3>Entries</h3>}
       {patient?.entries.map((entry) => {
         entry.diagnosisCodes &&
