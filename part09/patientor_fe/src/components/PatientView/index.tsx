@@ -7,6 +7,7 @@ import { Female, Male, Transgender } from '@mui/icons-material';
 import { EntryDetails } from '../EntryDetails';
 import { Box, Typography } from '@mui/material';
 import { AddEntryForm } from './AddEntryForm';
+import { parseError } from '../../utils';
 
 interface Props {
   diagnoses: Diagnose[];
@@ -19,7 +20,7 @@ const PatientView = ({ diagnoses }: Props) => {
   const patientId = useParams().id;
 
   useEffect(() => {
-    const fetchPatient = async () => {
+    async function fetchPatient() {
       if (!patientId) {
         setError('Patiend ID is missing');
         return;
@@ -34,7 +35,7 @@ const PatientView = ({ diagnoses }: Props) => {
           console.log('Error', error.message);
         }
       }
-    };
+    }
 
     void fetchPatient();
   }, []);
@@ -77,21 +78,7 @@ const PatientView = ({ diagnoses }: Props) => {
       patient.entries.push(addedEntry);
       setPatient(patientMod);
     } catch (e: unknown) {
-      if (axios.isAxiosError(e)) {
-        if (e?.response?.data && typeof e?.response?.data === 'string') {
-          const message = e.response.data.replace(
-            'Something went wrong. Error: ',
-            ''
-          );
-          console.error(message);
-          setError(message);
-        } else {
-          setError('Unrecognized axios error');
-        }
-      } else {
-        console.error('Unknown error', e);
-        setError('Unknown error');
-      }
+      setError(parseError(e));
     }
   }
 

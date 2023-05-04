@@ -18,6 +18,7 @@ import HealthRatingBar from '../HealthRatingBar';
 
 import patientService from '../../services/patients';
 import { Link } from 'react-router-dom';
+import { parseError } from '../../utils';
 
 interface Props {
   patients: Patient[];
@@ -41,21 +42,7 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
       setPatients(patients.concat(patient));
       setModalOpen(false);
     } catch (e: unknown) {
-      if (axios.isAxiosError(e)) {
-        if (e?.response?.data && typeof e?.response?.data === 'string') {
-          const message = e.response.data.replace(
-            'Something went wrong. Error: ',
-            ''
-          );
-          console.error(message);
-          setError(message);
-        } else {
-          setError('Unrecognized axios error');
-        }
-      } else {
-        console.error('Unknown error', e);
-        setError('Unknown error');
-      }
+      setError(parseError(e));
     }
   };
 
