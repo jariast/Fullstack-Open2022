@@ -9,7 +9,6 @@ import {
   TableRow,
   TableBody,
 } from '@mui/material';
-import axios from 'axios';
 
 import { PatientFormValues, Patient } from '../../types';
 import AddPatientModal from '../AddPatientModal';
