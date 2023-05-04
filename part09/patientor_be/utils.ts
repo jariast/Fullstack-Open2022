@@ -183,7 +183,7 @@ function isGender(param: string): param is Gender {
 
 function isHealthCheckRating(param: number): param is HealthCheckRating {
   return Object.values(HealthCheckRating)
-    .filter((v) => !isNaN(Number(v)))
+    .filter((v) => isNaN(Number(v)))
     .includes(param);
 }
 

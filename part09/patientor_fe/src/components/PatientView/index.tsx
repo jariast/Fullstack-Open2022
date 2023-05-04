@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Diagnose, Gender, Patient } from '../../types';
+import { Diagnose, Gender, NewEntry, Patient } from '../../types';
 import patientService from '../../services/patients';
 import axios from 'axios';
 import { Female, Male, Transgender } from '@mui/icons-material';
@@ -67,6 +67,34 @@ const PatientView = ({ diagnoses }: Props) => {
     });
   }
 
+  async function handleEntrySubmission(newEntry: NewEntry) {
+    if (!patient) {
+      return;
+    }
+    try {
+      const addedEntry = await patientService.addEntry(newEntry, patient.id);
+      const patientMod = { ...patient };
+      patient.entries.push(addedEntry);
+      setPatient(patientMod);
+    } catch (e: unknown) {
+      if (axios.isAxiosError(e)) {
+        if (e?.response?.data && typeof e?.response?.data === 'string') {
+          const message = e.response.data.replace(
+            'Something went wrong. Error: ',
+            ''
+          );
+          console.error(message);
+          setError(message);
+        } else {
+          setError('Unrecognized axios error');
+        }
+      } else {
+        console.error('Unknown error', e);
+        setError('Unknown error');
+      }
+    }
+  }
+
   const content = patient ? (
     <>
       <h2>
@@ -76,7 +104,7 @@ const PatientView = ({ diagnoses }: Props) => {
       <p>Ocuupation: {patient?.occupation}</p>
       <Box>
         <Typography variant="h4">Add New Entry</Typography>
-        <AddEntryForm />
+        <AddEntryForm onFormSubmit={handleEntrySubmission} />
       </Box>
 
       {patient.entries.length > 0 && <h3>Entries</h3>}
