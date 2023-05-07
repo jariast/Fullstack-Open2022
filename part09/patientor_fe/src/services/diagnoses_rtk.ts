@@ -13,4 +13,17 @@
 // });
 //
 // export const { useGetDiagnosesQuery } = diagnoseApi;
-export const test = 1;
+
+import { Diagnose } from '../types';
+import { api } from './api';
+
+//
+export const diagnoseApi = api.injectEndpoints({
+  endpoints: (builder) => ({
+    getDiagnoses: builder.query<Diagnose[], void>({
+      query: () => 'diagnoses',
+    }),
+  }),
+});
+
+export const { useGetDiagnosesQuery } = diagnoseApi;

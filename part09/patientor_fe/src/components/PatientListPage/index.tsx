@@ -31,12 +31,12 @@ const PatientListPage = () => {
   };
 
   const submitNewPatient = async (values: PatientFormValues) => {
-    try {
-      const patient = await patientService.create(values);
-      setModalOpen(false);
-    } catch (e: unknown) {
-      console.log('Error: ', e);
-    }
+    // try {
+    //   const patient = await patientService.create(values);
+    //   setModalOpen(false);
+    // } catch (e: unknown) {
+    //   console.log('Error: ', e);
+    // }
   };
 
   let content;

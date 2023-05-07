@@ -1,4 +1,4 @@
-import { useGetDiagnosesQuery } from '../../services/patients_rtk';
+import { useGetDiagnosesQuery } from '../../services/diagnoses_rtk';
 import { Entry } from '../../types';
 import { HealthCheckEntry } from './HealthCheckEntry';
 import { HospitalEntry } from './HospitalEntry';
