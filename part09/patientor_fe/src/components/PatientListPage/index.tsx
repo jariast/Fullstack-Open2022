@@ -18,6 +18,7 @@ import HealthRatingBar from '../HealthRatingBar';
 import patientService from '../../services/patients';
 import { Link } from 'react-router-dom';
 import { useGetPatientsQuery } from '../../services/patients_rtk';
+import { parseRTKQueryError } from '../../utils';
 
 const PatientListPage = () => {
   const { data: patients, isLoading, error } = useGetPatientsQuery();
@@ -70,7 +71,8 @@ const PatientListPage = () => {
       </Table>
     );
   } else if (error) {
-    content = <h1>{`Error: ${error}`}</h1>;
+    const errorMsg = parseRTKQueryError(error);
+    content = <h1>{`Error: ${errorMsg}`}</h1>;
   }
 
   return (
