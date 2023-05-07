@@ -4,5 +4,6 @@ import { apiBaseUrl } from '../constants';
 export const api = createApi({
   reducerPath: 'splitApi',
   baseQuery: fetchBaseQuery({ baseUrl: apiBaseUrl }),
+  tagTypes: ['Patients'],
   endpoints: () => ({}),
 });

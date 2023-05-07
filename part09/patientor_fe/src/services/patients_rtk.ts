@@ -5,6 +5,7 @@ export const patientApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getPatients: builder.query<Patient[], void>({
       query: () => '/patients',
+      providesTags: ['Patients'],
     }),
     getPatient: builder.query<Patient, string>({
       query: (patientId) => `/patients/${patientId}`,
@@ -15,6 +16,7 @@ export const patientApi = api.injectEndpoints({
         method: 'POST',
         body: newPatientObj,
       }),
+      invalidatesTags: ['Patients'],
     }),
   }),
 });
