@@ -17,41 +17,33 @@ import HealthRatingBar from '../HealthRatingBar';
 
 import patientService from '../../services/patients';
 import { Link } from 'react-router-dom';
-import { parseError } from '../../utils';
+import { useGetPatientsQuery } from '../../services/patients_rtk';
 
-interface Props {
-  patients: Patient[];
-  setPatients: React.Dispatch<React.SetStateAction<Patient[]>>;
-}
-
-const PatientListPage = ({ patients, setPatients }: Props) => {
+const PatientListPage = () => {
+  const { data: patients, isLoading, error } = useGetPatientsQuery();
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [error, setError] = useState<string>();
 
   const openModal = (): void => setModalOpen(true);
 
   const closeModal = (): void => {
     setModalOpen(false);
-    setError(undefined);
   };
 
   const submitNewPatient = async (values: PatientFormValues) => {
     try {
       const patient = await patientService.create(values);
-      setPatients(patients.concat(patient));
       setModalOpen(false);
     } catch (e: unknown) {
-      setError(parseError(e));
+      console.log('Error: ', e);
     }
   };
 
-  return (
-    <div className="App">
-      <Box>
-        <Typography align="center" variant="h6">
-          Patient list
-        </Typography>
-      </Box>
+  let content;
+
+  if (isLoading) {
+    content = <h1>Loading Patients data</h1>;
+  } else if (patients) {
+    content = (
       <Table style={{ marginBottom: '1em' }}>
         <TableHead>
           <TableRow>
@@ -76,10 +68,23 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
           ))}
         </TableBody>
       </Table>
+    );
+  } else if (error) {
+    content = <h1>{`Error: ${error}`}</h1>;
+  }
+
+  return (
+    <div className="App">
+      <Box>
+        <Typography align="center" variant="h6">
+          Patient list
+        </Typography>
+      </Box>
+      {content}
       <AddPatientModal
         modalOpen={modalOpen}
         onSubmit={submitNewPatient}
-        error={error}
+        error={'remember to parse the error'}
         onClose={closeModal}
       />
       <Button variant="contained" onClick={() => openModal()}>

@@ -1,8 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import patientsReducer from '../slices/patientsReducer';
+import { patientApi } from '../services/patients_rtk';
 
 export default configureStore({
   reducer: {
-    patients: patientsReducer,
+    [patientApi.reducerPath]: patientApi.reducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(patientApi.middleware),
 });
