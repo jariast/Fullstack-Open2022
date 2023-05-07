@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { apiBaseUrl } from '../constants';
-import { Patient } from '../types';
+import { Diagnose, Patient } from '../types';
 
 export const patientApi = createApi({
   reducerPath: 'patientApi',
@@ -9,7 +9,14 @@ export const patientApi = createApi({
     getPatients: builder.query<Patient[], void>({
       query: () => '/patients',
     }),
+    getPatient: builder.query<Patient, string>({
+      query: (patientId) => `/patients/${patientId}`,
+    }),
+    getDiagnoses: builder.query<Diagnose[], void>({
+      query: () => 'diagnoses',
+    }),
   }),
 });
 
-export const { useGetPatientsQuery } = patientApi;
+export const { useGetPatientsQuery, useGetPatientQuery, useGetDiagnosesQuery } =
+  patientApi;

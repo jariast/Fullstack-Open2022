@@ -1,3 +1,4 @@
+import { useGetDiagnosesQuery } from '../../services/patients_rtk';
 import { Entry } from '../../types';
 import { HealthCheckEntry } from './HealthCheckEntry';
 import { HospitalEntry } from './HospitalEntry';
@@ -8,18 +9,32 @@ interface Props {
 }
 
 function EntryDetails({ entry }: Props) {
-  switch (entry.type) {
+  const { data: diagnoses } = useGetDiagnosesQuery();
+
+  const entryCopy = { ...entry };
+
+  if (diagnoses && entry.diagnosisCodes && entry.diagnosisCodes.length > 0) {
+    entryCopy.diagnoses = entry.diagnosisCodes.map((code) => {
+      const diagnosis = diagnoses.find((d) => d.code === code);
+      if (!diagnosis) {
+        throw new Error('Diagnosis error');
+      }
+      return { ...diagnosis };
+    });
+  }
+
+  switch (entryCopy.type) {
     case 'Hospital':
-      return <HospitalEntry entry={entry} />;
+      return <HospitalEntry entry={entryCopy} />;
 
     case 'OccupationalHealthcare':
-      return <OccupationlalEntry entry={entry} />;
+      return <OccupationlalEntry entry={entryCopy} />;
 
     case 'HealthCheck':
-      return <HealthCheckEntry entry={entry} />;
+      return <HealthCheckEntry entry={entryCopy} />;
 
     default:
-      return assertNever(entry);
+      return assertNever(entryCopy);
   }
 }
 

@@ -1,44 +1,19 @@
-import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Diagnose, Gender, NewEntry, Patient } from '../../types';
-import patientService from '../../services/patients';
-import axios from 'axios';
+import { Gender, NewEntry } from '../../types';
 import { Female, Male, Transgender } from '@mui/icons-material';
 import { EntryDetails } from '../EntryDetails';
 import { Box, Typography } from '@mui/material';
 import { AddEntryForm } from './AddEntryForm';
-import { parseError } from '../../utils';
+import { useGetPatientQuery } from '../../services/patients_rtk';
 
-interface Props {
-  diagnoses: Diagnose[];
-}
+// interface Props {
+//   diagnoses: Diagnose[];
+// }
 
-const PatientView = ({ diagnoses }: Props) => {
-  const [patient, setPatient] = useState<Patient | null>(null);
-  const [error, setError] = useState('');
-
+const PatientView = () => {
   const patientId = useParams().id;
 
-  useEffect(() => {
-    async function fetchPatient() {
-      if (!patientId) {
-        setError('Patiend ID is missing');
-        return;
-      }
-
-      try {
-        const patient = await patientService.getPatientById(patientId);
-        setPatient(patient);
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          setError(error.response?.data);
-          console.log('Error', error.message);
-        }
-      }
-    }
-
-    void fetchPatient();
-  }, []);
+  const { data: patient } = useGetPatientQuery(patientId ? patientId : '');
 
   let icon;
 
@@ -56,30 +31,19 @@ const PatientView = ({ diagnoses }: Props) => {
       break;
   }
 
-  function buildDiagnosesArray(
-    diagnosesCodes: Array<Diagnose['code']>
-  ): Diagnose[] {
-    return diagnosesCodes.map((code) => {
-      const diagnosis = diagnoses.find((d) => d.code === code);
-      if (!diagnosis) {
-        throw new Error('Diagnosis error');
-      }
-      return { ...diagnosis };
-    });
-  }
-
   async function handleEntrySubmission(newEntry: NewEntry) {
-    if (!patient) {
-      return;
-    }
-    try {
-      const addedEntry = await patientService.addEntry(newEntry, patient.id);
-      const patientMod = { ...patient };
-      patient.entries.push(addedEntry);
-      setPatient(patientMod);
-    } catch (e: unknown) {
-      setError(parseError(e));
-    }
+    console.log('Remember to handle new entry: ', newEntry);
+    // if (!patient) {
+    //   return;
+    // }
+    // try {
+    //   const addedEntry = await patientService.addEntry(newEntry, patient.id);
+    //   const patientMod = { ...patient };
+    //   patient.entries.push(addedEntry);
+    //   // setPatient(patientMod);
+    // } catch (e: unknown) {
+    //   setError(parseError(e));
+    // }
   }
 
   const content = patient ? (
@@ -95,9 +59,7 @@ const PatientView = ({ diagnoses }: Props) => {
       </Box>
 
       {patient.entries.length > 0 && <h3>Entries</h3>}
-      {patient?.entries.map((entry) => {
-        entry.diagnosisCodes &&
-          (entry.diagnoses = buildDiagnosesArray(entry.diagnosisCodes));
+      {patient.entries.map((entry) => {
         return (
           <Box key={entry.id}>
             <EntryDetails entry={entry} />
@@ -110,7 +72,7 @@ const PatientView = ({ diagnoses }: Props) => {
   );
   return (
     <>
-      {error && <h3>{error}</h3>}
+      {/* {error && <h3>{error}</h3>} */}
       {patient && content}
     </>
   );

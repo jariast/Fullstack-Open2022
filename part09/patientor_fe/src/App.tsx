@@ -1,24 +1,10 @@
-import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import { Button, Divider, Container, Typography } from '@mui/material';
 
-import { Diagnose } from './types';
-
 import PatientListPage from './components/PatientListPage';
 import { PatientView } from './components/PatientView';
-import { diagnosesService } from './services/diagnoses';
 
 const App = () => {
-  const [diagnoses, setDiagnoses] = useState<Diagnose[]>([]);
-
-  useEffect(() => {
-    const fetchDiagnoses = async () => {
-      const diagnoses = await diagnosesService.getAll();
-      setDiagnoses(diagnoses);
-    };
-    void fetchDiagnoses();
-  }, []);
-
   return (
     <div className="App">
       <Router>
@@ -32,10 +18,7 @@ const App = () => {
           <Divider hidden />
           <Routes>
             <Route path="/" element={<PatientListPage />} />
-            <Route
-              path="/patient/:id"
-              element={<PatientView diagnoses={diagnoses} />}
-            />
+            <Route path="/patient/:id" element={<PatientView />} />
           </Routes>
         </Container>
       </Router>
