@@ -17,12 +17,18 @@ import HealthRatingBar from '../HealthRatingBar';
 
 import patientService from '../../services/patients';
 import { Link } from 'react-router-dom';
-import { useGetPatientsQuery } from '../../services/patients_rtk';
+import {
+  useCreatePostMutation,
+  useGetPatientsQuery,
+} from '../../services/patients_rtk';
 import { parseRTKQueryError } from '../../utils';
 
 const PatientListPage = () => {
   const { data: patients, isLoading, error } = useGetPatientsQuery();
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+
+  const [addNewPatient, { error: patientCreationError }] =
+    useCreatePostMutation();
 
   const openModal = (): void => setModalOpen(true);
 
@@ -31,12 +37,12 @@ const PatientListPage = () => {
   };
 
   const submitNewPatient = async (values: PatientFormValues) => {
-    // try {
-    //   const patient = await patientService.create(values);
-    //   setModalOpen(false);
-    // } catch (e: unknown) {
-    //   console.log('Error: ', e);
-    // }
+    try {
+      await addNewPatient(values).unwrap();
+      setModalOpen(false);
+    } catch (error) {
+      console.error('Failed to save patient: ', error);
+    }
   };
 
   let content;
@@ -86,7 +92,7 @@ const PatientListPage = () => {
       <AddPatientModal
         modalOpen={modalOpen}
         onSubmit={submitNewPatient}
-        error={'remember to parse the error'}
+        error={parseRTKQueryError(patientCreationError)}
         onClose={closeModal}
       />
       <Button variant="contained" onClick={() => openModal()}>

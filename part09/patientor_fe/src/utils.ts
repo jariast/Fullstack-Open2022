@@ -40,7 +40,10 @@ function isErrorWithMessage(error: unknown): error is { message: string } {
 }
 
 function parseRTKQueryError(error: unknown) {
-  if (isFetchBaseQueryError(error)) {
+  //This check is used when the backend actually returns an Error message
+  if (typeof error === 'object' && error !== null && 'data' in error) {
+    return JSON.stringify(error.data);
+  } else if (isFetchBaseQueryError(error)) {
     const errMsg = 'error' in error ? error.error : JSON.stringify(error.data);
     return errMsg;
   } else if (isErrorWithMessage(error)) {
