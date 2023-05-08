@@ -15,10 +15,9 @@ import AddPatientModal from '../AddPatientModal';
 
 import HealthRatingBar from '../HealthRatingBar';
 
-import patientService from '../../services/patients';
 import { Link } from 'react-router-dom';
 import {
-  useCreatePostMutation,
+  useCreatePatientMutation,
   useGetPatientsQuery,
 } from '../../services/patients_rtk';
 import { parseRTKQueryError } from '../../utils';
@@ -28,7 +27,7 @@ const PatientListPage = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   const [addNewPatient, { error: patientCreationError }] =
-    useCreatePostMutation();
+    useCreatePatientMutation();
 
   const openModal = (): void => setModalOpen(true);
 

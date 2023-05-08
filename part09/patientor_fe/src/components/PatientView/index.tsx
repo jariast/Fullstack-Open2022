@@ -4,7 +4,10 @@ import { Female, Male, Transgender } from '@mui/icons-material';
 import { EntryDetails } from '../EntryDetails';
 import { Box, Typography } from '@mui/material';
 import { AddEntryForm } from './AddEntryForm';
-import { useGetPatientQuery } from '../../services/patients_rtk';
+import {
+  useAddEntryMutation,
+  useGetPatientQuery,
+} from '../../services/patients_rtk';
 
 // interface Props {
 //   diagnoses: Diagnose[];
@@ -14,6 +17,7 @@ const PatientView = () => {
   const patientId = useParams().id;
 
   const { data: patient } = useGetPatientQuery(patientId ? patientId : '');
+  const [addNewEntry, { error: entryCreationError }] = useAddEntryMutation();
 
   let icon;
 
@@ -33,6 +37,19 @@ const PatientView = () => {
 
   async function handleEntrySubmission(newEntry: NewEntry) {
     console.log('Remember to handle new entry: ', newEntry);
+
+    if (!patient) {
+      return;
+    }
+    try {
+      await addNewEntry({
+        newEntryObj: newEntry,
+        patientId: patient.id,
+      }).unwrap();
+    } catch (error) {
+      console.error('Failed to add Entry: ', error);
+    }
+
     // if (!patient) {
     //   return;
     // }
