@@ -1,7 +1,7 @@
 import { Button, TextField } from '@mui/material';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
-import { NewEntry } from '../../types';
+import { Entry, EntryType, NewEntry } from '../../types';
 
 interface Props {
   onFormSubmit: (newEntry: NewEntry) => void;
@@ -28,11 +28,12 @@ const AddEntryForm = ({ onFormSubmit }: Props) => {
     onSubmit: (values) => {
       const newEntry: NewEntry = {
         ...values,
-        type: 'HealthCheck',
+        type: EntryType.HealthCheck,
       };
       onFormSubmit(newEntry);
     },
   });
+
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
@@ -51,6 +52,7 @@ const AddEntryForm = ({ onFormSubmit }: Props) => {
           id="date"
           name="date"
           label="Date"
+          type="date"
           value={formik.values.date}
           onChange={formik.handleChange}
           error={formik.touched.date && Boolean(formik.errors.date)}

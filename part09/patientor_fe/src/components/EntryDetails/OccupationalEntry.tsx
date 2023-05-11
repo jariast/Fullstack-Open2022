@@ -8,11 +8,11 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
-import { Entry } from '../../types';
+import { Entry, EntryType } from '../../types';
 
 type ExtractedHospitalEntry = Extract<
   Entry,
-  { type: 'OccupationalHealthcare' }
+  { type: EntryType.OccupationalHealthcare }
 >;
 
 interface Props {

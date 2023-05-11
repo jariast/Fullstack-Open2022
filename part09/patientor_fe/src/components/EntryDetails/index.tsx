@@ -1,5 +1,5 @@
 import { useGetDiagnosesQuery } from '../../services/diagnoses_rtk';
-import { Entry } from '../../types';
+import { Entry, EntryType } from '../../types';
 import { HealthCheckEntry } from './HealthCheckEntry';
 import { HospitalEntry } from './HospitalEntry';
 import { OccupationlalEntry } from './OccupationalEntry';
@@ -24,13 +24,13 @@ function EntryDetails({ entry }: Props) {
   }
 
   switch (entryCopy.type) {
-    case 'Hospital':
+    case EntryType.Hospital:
       return <HospitalEntry entry={entryCopy} />;
 
-    case 'OccupationalHealthcare':
+    case EntryType.OccupationalHealthcare:
       return <OccupationlalEntry entry={entryCopy} />;
 
-    case 'HealthCheck':
+    case EntryType.HealthCheck:
       return <HealthCheckEntry entry={entryCopy} />;
 
     default:

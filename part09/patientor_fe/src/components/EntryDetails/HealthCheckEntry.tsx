@@ -8,9 +8,9 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
-import { Entry } from '../../types';
+import { Entry, EntryType } from '../../types';
 
-type ExtractedHospitalEntry = Extract<Entry, { type: 'HealthCheck' }>;
+type ExtractedHospitalEntry = Extract<Entry, { type: EntryType.HealthCheck }>;
 
 interface Props {
   entry: ExtractedHospitalEntry;
