@@ -1,76 +1,60 @@
-import { Button, TextField } from '@mui/material';
-import * as yup from 'yup';
-import { useFormik } from 'formik';
-import { Entry, EntryType, NewEntry } from '../../types';
+import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import { EntryType, NewEntry } from '../../types';
+import { splitStringByUpperCase } from '../../utils';
+import { useState } from 'react';
+import { HealtCheckEntryForm } from './HealthChectEntryForm';
 
 interface Props {
   onFormSubmit: (newEntry: NewEntry) => void;
 }
 
-const validationSchema = yup.object({
-  description: yup.string().required('Description is required'),
-  date: yup.string().required('You must enter a date'),
-  specialist: yup.string().required('Specialist name required'),
-  // diagnosisCodes: yup.array().of(yup.string()),
-  healthCheckRating: yup.number().required(),
-});
+interface EntryTypeOption {
+  value: EntryType;
+  label: string;
+}
+
+const entryTypeOptions: EntryTypeOption[] = Object.values(EntryType).map(
+  (value) => ({ value: value, label: splitStringByUpperCase(value) })
+);
 
 const AddEntryForm = ({ onFormSubmit }: Props) => {
-  const formik = useFormik({
-    initialValues: {
-      description: '',
-      date: '2023-03-12',
-      specialist: '',
-      // diagnosisCodes: [],
-      healthCheckRating: 0,
-    },
-    validationSchema: validationSchema,
-    onSubmit: (values) => {
-      const newEntry: NewEntry = {
-        ...values,
-        type: EntryType.HealthCheck,
-      };
-      onFormSubmit(newEntry);
-    },
-  });
+  const [entryType, setEntryType] = useState(EntryType.HealthCheck);
+
+  function onEntryTypeChange(event: SelectChangeEvent<string>) {
+    event.preventDefault();
+    if (typeof event.target.value === 'string') {
+      const value = event.target.value;
+      const entryType = Object.values(EntryType).find(
+        (g) => g.toString() === value
+      );
+      if (entryType) {
+        setEntryType(entryType);
+        // setGender(gender);
+      }
+    }
+  }
+
+  let form;
+  switch (entryType) {
+    case EntryType.HealthCheck:
+      form = <HealtCheckEntryForm onFormSubmit={onFormSubmit} />;
+      break;
+
+    default:
+      form = <span>Form goes here</span>;
+      break;
+  }
 
   return (
     <div>
-      <form onSubmit={formik.handleSubmit}>
-        <TextField
-          id="description"
-          name="description"
-          label="Description"
-          value={formik.values.description}
-          onChange={formik.handleChange}
-          error={
-            formik.touched.description && Boolean(formik.errors.description)
-          }
-          helperText={formik.touched.description && formik.errors.description}
-        />
-        <TextField
-          id="date"
-          name="date"
-          label="Date"
-          type="date"
-          value={formik.values.date}
-          onChange={formik.handleChange}
-          error={formik.touched.date && Boolean(formik.errors.date)}
-          helperText={formik.touched.date && formik.errors.date}
-        />
-        <TextField
-          id="specialist"
-          name="specialist"
-          label="Specialist"
-          value={formik.values.specialist}
-          onChange={formik.handleChange}
-          error={formik.touched.specialist && Boolean(formik.errors.specialist)}
-          helperText={formik.touched.specialist && formik.errors.specialist}
-        />
-        <Button color="primary" type="submit">
-          Submit
-        </Button>
-      </form>
+      <Select label="Entry Type" value={entryType} onChange={onEntryTypeChange}>
+        {entryTypeOptions.map((option) => (
+          <MenuItem key={option.label} value={option.value}>
+            {option.label}
+          </MenuItem>
+        ))}
+      </Select>
+      {form}
     </div>
   );
 };

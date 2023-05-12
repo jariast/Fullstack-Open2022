@@ -51,9 +51,19 @@ function parseRTKQueryError(error: unknown) {
   }
 }
 
+/**
+ * Function to split strings by Uppercase words.
+ * @param {string} string - String to split e.g. 'TestString'
+ * @returns {string} Split stream e.g 'Test String'
+ */
+function splitStringByUpperCase(string: string): string {
+  return string.split(/(?=[A-Z])/).join(' ');
+}
+
 export {
   parseError,
   isFetchBaseQueryError,
   isErrorWithMessage,
   parseRTKQueryError,
+  splitStringByUpperCase,
 };
