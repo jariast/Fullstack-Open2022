@@ -122,7 +122,7 @@ function parseHealthRating(rating: unknown): HealthCheckRating {
   if (
     isNaN(ratingNumber) ||
     !isNumber(ratingNumber) ||
-    isHealthCheckRating(ratingNumber)
+    !isHealthCheckRating(ratingNumber)
   ) {
     throw new Error(`Incorrect Health Rating: ${rating}`);
   }
@@ -189,7 +189,7 @@ function isGender(param: string): param is Gender {
 
 function isHealthCheckRating(param: number): param is HealthCheckRating {
   return Object.values(HealthCheckRating)
-    .filter((v) => isNaN(Number(v)))
+    .filter((v) => !isNaN(Number(v)))
     .includes(param);
 }
 
