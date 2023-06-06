@@ -117,10 +117,16 @@ function parseGender(gender: unknown): Gender {
 }
 
 function parseHealthRating(rating: unknown): HealthCheckRating {
-  if (!isNumber(rating) || isHealthCheckRating(rating)) {
+  const ratingNumber = Number(rating);
+
+  if (
+    isNaN(ratingNumber) ||
+    !isNumber(ratingNumber) ||
+    isHealthCheckRating(ratingNumber)
+  ) {
     throw new Error(`Incorrect Health Rating: ${rating}`);
   }
-  return rating;
+  return ratingNumber;
 }
 
 function parseDiagonsisCodes(object: unknown): Array<Diagnose['code']> {
