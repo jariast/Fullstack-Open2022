@@ -9,10 +9,6 @@ import {
   useGetPatientQuery,
 } from '../../services/patients_rtk';
 
-// interface Props {
-//   diagnoses: Diagnose[];
-// }
-
 const PatientView = () => {
   const patientId = useParams().id;
 
@@ -49,18 +45,6 @@ const PatientView = () => {
     } catch (error) {
       console.error('Failed to add Entry: ', error);
     }
-
-    // if (!patient) {
-    //   return;
-    // }
-    // try {
-    //   const addedEntry = await patientService.addEntry(newEntry, patient.id);
-    //   const patientMod = { ...patient };
-    //   patient.entries.push(addedEntry);
-    //   // setPatient(patientMod);
-    // } catch (e: unknown) {
-    //   setError(parseError(e));
-    // }
   }
 
   const content = patient ? (

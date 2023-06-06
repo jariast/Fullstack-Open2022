@@ -31,6 +31,9 @@ function HealthCheckEntry({ entry }: Props) {
         <Typography variant="body2" color="text.secondary">
           {entry.description}
         </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Rating: {entry.healthCheckRating}
+        </Typography>
         <ul>
           {entry.diagnoses?.map((d) => (
             <List key={d.code}>
