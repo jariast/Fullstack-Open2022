@@ -6,6 +6,7 @@ import { HealtCheckEntryForm } from './HealthChectEntryForm';
 
 interface Props {
   onFormSubmit: (newEntry: NewEntry) => void;
+  isSubmitSuccess: boolean;
 }
 
 interface EntryTypeOption {
@@ -17,7 +18,7 @@ const entryTypeOptions: EntryTypeOption[] = Object.values(EntryType).map(
   (value) => ({ value: value, label: splitStringByUpperCase(value) })
 );
 
-const AddEntryForm = ({ onFormSubmit }: Props) => {
+const AddEntryForm = ({ onFormSubmit, isSubmitSuccess }: Props) => {
   const [entryType, setEntryType] = useState(EntryType.HealthCheck);
 
   function onEntryTypeChange(event: SelectChangeEvent<string>) {
@@ -37,7 +38,13 @@ const AddEntryForm = ({ onFormSubmit }: Props) => {
   let form;
   switch (entryType) {
     case EntryType.HealthCheck:
-      form = <HealtCheckEntryForm onFormSubmit={onFormSubmit} />;
+      form = (
+        <HealtCheckEntryForm
+          onFormSubmit={onFormSubmit}
+          isSubmitSuccess={isSubmitSuccess}
+        />
+      );
+
       break;
 
     default:

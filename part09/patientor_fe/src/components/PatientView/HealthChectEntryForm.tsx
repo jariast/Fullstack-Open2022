@@ -2,9 +2,11 @@ import { Button, TextField } from '@mui/material';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import { NewEntry, EntryType } from '../../types';
+import { useEffect } from 'react';
 
 interface Props {
   onFormSubmit: (newEntry: NewEntry) => void;
+  isSubmitSuccess: boolean;
 }
 
 const validationSchema = yup.object({
@@ -14,7 +16,7 @@ const validationSchema = yup.object({
   healthCheckRating: yup.number().required(),
 });
 
-const HealtCheckEntryForm = ({ onFormSubmit }: Props) => {
+const HealtCheckEntryForm = ({ onFormSubmit, isSubmitSuccess }: Props) => {
   const formik = useFormik({
     initialValues: {
       description: '',
@@ -31,6 +33,14 @@ const HealtCheckEntryForm = ({ onFormSubmit }: Props) => {
       onFormSubmit(newEntry);
     },
   });
+
+  // I'm really not sure of this approach for resetting the form.
+  useEffect(() => {
+    if (isSubmitSuccess) {
+      formik.resetForm();
+    }
+  }, [isSubmitSuccess]);
+
   return (
     <div>
       <form onSubmit={formik.handleSubmit}>
@@ -63,6 +73,20 @@ const HealtCheckEntryForm = ({ onFormSubmit }: Props) => {
           onChange={formik.handleChange}
           error={formik.touched.specialist && Boolean(formik.errors.specialist)}
           helperText={formik.touched.specialist && formik.errors.specialist}
+        />
+        <TextField
+          id="healthCheckRating"
+          name="healthCheckRating"
+          label="Health Rating"
+          value={formik.values.healthCheckRating}
+          onChange={formik.handleChange}
+          error={
+            formik.touched.healthCheckRating &&
+            Boolean(formik.errors.healthCheckRating)
+          }
+          helperText={
+            formik.touched.healthCheckRating && formik.errors.healthCheckRating
+          }
         />
         <Button color="primary" type="submit">
           Submit

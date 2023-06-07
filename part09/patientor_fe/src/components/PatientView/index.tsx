@@ -8,15 +8,22 @@ import {
   useAddEntryMutation,
   useGetPatientQuery,
 } from '../../services/patients_rtk';
+import { parseRTKQueryError } from '../../utils';
 
 const PatientView = () => {
   const patientId = useParams().id;
 
   const { data: patient } = useGetPatientQuery(patientId ? patientId : '');
-  const [addNewEntry, { error: entryCreationError }] = useAddEntryMutation();
+  const [addNewEntry, { error: entryCreationError, isSuccess }] =
+    useAddEntryMutation();
+
+  let errorMsg;
+  if (entryCreationError) {
+    const parsedError = parseRTKQueryError(entryCreationError);
+    errorMsg = <h1>{`Error: ${parsedError}`}</h1>;
+  }
 
   let icon;
-
   switch (patient?.gender) {
     case Gender.Male:
       icon = <Male></Male>;
@@ -31,20 +38,14 @@ const PatientView = () => {
       break;
   }
 
-  async function handleEntrySubmission(newEntry: NewEntry) {
-    console.log('Remember to handle new entry: ', newEntry);
-
+  function handleEntrySubmission(newEntry: NewEntry) {
     if (!patient) {
       return;
     }
-    try {
-      await addNewEntry({
-        newEntryObj: newEntry,
-        patientId: patient.id,
-      }).unwrap();
-    } catch (error) {
-      console.error('Failed to add Entry: ', error);
-    }
+    addNewEntry({
+      newEntryObj: newEntry,
+      patientId: patient.id,
+    });
   }
 
   const content = patient ? (
@@ -56,7 +57,10 @@ const PatientView = () => {
       <p>Ocuupation: {patient?.occupation}</p>
       <Box>
         <Typography variant="h4">Add New Entry</Typography>
-        <AddEntryForm onFormSubmit={handleEntrySubmission} />
+        <AddEntryForm
+          onFormSubmit={handleEntrySubmission}
+          isSubmitSuccess={isSuccess}
+        />
       </Box>
 
       {patient.entries.length > 0 && <h3>Entries</h3>}
@@ -73,7 +77,7 @@ const PatientView = () => {
   );
   return (
     <>
-      {/* {error && <h3>{error}</h3>} */}
+      {errorMsg}
       {patient && content}
     </>
   );
