@@ -1,9 +1,9 @@
+import { useEffect } from 'react';
 import { Button, TextField } from '@mui/material';
+import { EntryType, NewEntry } from '../../types';
+import { baseEntryValidationSchema, baseInitialValues } from './formConstants';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
-import { NewEntry, EntryType } from '../../types';
-import { useEffect } from 'react';
-import { baseEntryValidationSchema, baseInitialValues } from './formConstants';
 
 interface Props {
   onFormSubmit: (newEntry: NewEntry) => void;
@@ -12,27 +12,31 @@ interface Props {
 
 const validationSchema = baseEntryValidationSchema.concat(
   yup.object({
-    healthCheckRating: yup.number().required('Healh Rating is required'),
+    employerName: yup.string().required('Employer name is required'),
+    sickLeave: yup.object({ startDate: yup.string(), endDate: yup.string() }),
   })
 );
 
-const HealtCheckEntryForm = ({ onFormSubmit, isSubmitSuccess }: Props) => {
+const OccupationalEntryForm = ({ onFormSubmit, isSubmitSuccess }: Props) => {
   const formik = useFormik({
     initialValues: {
       ...baseInitialValues,
-      healthCheckRating: 0,
+      employerName: '',
+      sickLeave: { startDate: '', endDate: '' },
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
       const newEntry: NewEntry = {
         ...values,
-        type: EntryType.HealthCheck,
+        type: EntryType.OccupationalHealthcare,
       };
+      if (!values.sickLeave.endDate && !values.sickLeave.startDate) {
+        delete newEntry.sickLeave;
+      }
       onFormSubmit(newEntry);
     },
   });
 
-  // I'm really not sure of this approach for resetting the form.
   useEffect(() => {
     if (isSubmitSuccess) {
       formik.resetForm();
@@ -73,18 +77,31 @@ const HealtCheckEntryForm = ({ onFormSubmit, isSubmitSuccess }: Props) => {
           helperText={formik.touched.specialist && formik.errors.specialist}
         />
         <TextField
-          id="healthCheckRating"
-          name="healthCheckRating"
-          label="Health Rating"
-          value={formik.values.healthCheckRating}
+          id="employerName"
+          name="employerName"
+          label="Employer Name"
+          value={formik.values.employerName}
           onChange={formik.handleChange}
           error={
-            formik.touched.healthCheckRating &&
-            Boolean(formik.errors.healthCheckRating)
+            formik.touched.employerName && Boolean(formik.errors.employerName)
           }
-          helperText={
-            formik.touched.healthCheckRating && formik.errors.healthCheckRating
-          }
+          helperText={formik.touched.employerName && formik.errors.employerName}
+        />
+        <TextField
+          id="sickLeave.startDate"
+          name="sickLeave.startDate"
+          label="Start Date"
+          type="date"
+          value={formik.values.sickLeave.startDate}
+          onChange={formik.handleChange}
+        />
+        <TextField
+          id="sickLeave.endDate"
+          name="sickLeave.endDate"
+          label="End Date"
+          type="date"
+          value={formik.values.sickLeave.endDate}
+          onChange={formik.handleChange}
         />
         <Button color="primary" type="submit">
           Submit
@@ -94,4 +111,4 @@ const HealtCheckEntryForm = ({ onFormSubmit, isSubmitSuccess }: Props) => {
   );
 };
 
-export { HealtCheckEntryForm };
+export default OccupationalEntryForm;

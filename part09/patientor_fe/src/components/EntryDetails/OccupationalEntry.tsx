@@ -37,10 +37,12 @@ function OccupationlalEntry({ entry }: Props) {
         <Typography variant="body2" color="text.secondary">
           Employer: {entry.employerName}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Sickleave:{' '}
-          {`${entry.sickLeave?.startDate} - ${entry.sickLeave?.endDate}`}
-        </Typography>
+        {entry.sickLeave && (
+          <Typography variant="body2" color="text.secondary">
+            Sickleave:{' '}
+            {`${entry.sickLeave?.startDate} - ${entry.sickLeave?.endDate}`}
+          </Typography>
+        )}
         <ul>
           {entry.diagnoses?.map((d) => (
             <List key={d.code}>

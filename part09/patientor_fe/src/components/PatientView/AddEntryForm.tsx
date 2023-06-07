@@ -3,6 +3,7 @@ import { EntryType, NewEntry } from '../../types';
 import { splitStringByUpperCase } from '../../utils';
 import { useState } from 'react';
 import { HealtCheckEntryForm } from './HealthChectEntryForm';
+import OccupationalEntryForm from './OccupationalEntryForm';
 
 interface Props {
   onFormSubmit: (newEntry: NewEntry) => void;
@@ -44,7 +45,15 @@ const AddEntryForm = ({ onFormSubmit, isSubmitSuccess }: Props) => {
           isSubmitSuccess={isSubmitSuccess}
         />
       );
+      break;
 
+    case EntryType.OccupationalHealthcare:
+      form = (
+        <OccupationalEntryForm
+          onFormSubmit={onFormSubmit}
+          isSubmitSuccess={isSubmitSuccess}
+        />
+      );
       break;
 
     default:
