@@ -1,8 +1,8 @@
 import { MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { EntryType, NewEntry } from '../../types';
-import { splitStringByUpperCase } from '../../utils';
+import { assertNever, splitStringByUpperCase } from '../../utils';
 import { useState } from 'react';
-import { HealtCheckEntryForm } from './HealthChectEntryForm';
+import { HealtCheckEntryForm } from './HealthCheckEntryForm';
 import OccupationalEntryForm from './OccupationalEntryForm';
 import HospitalEntryForm from './HospitalEntry';
 
@@ -67,8 +67,7 @@ const AddEntryForm = ({ onFormSubmit, isSubmitSuccess }: Props) => {
       break;
 
     default:
-      form = <span>Form goes here</span>;
-      break;
+      return assertNever(entryType);
   }
 
   return (

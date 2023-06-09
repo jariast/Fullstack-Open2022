@@ -1,5 +1,6 @@
 import { useGetDiagnosesQuery } from '../../services/diagnoses_rtk';
 import { Entry, EntryType } from '../../types';
+import { assertNever } from '../../utils';
 import { HealthCheckEntry } from './HealthCheckEntry';
 import { HospitalEntry } from './HospitalEntry';
 import { OccupationlalEntry } from './OccupationalEntry';
@@ -39,9 +40,3 @@ function EntryDetails({ entry }: Props) {
 }
 
 export { EntryDetails };
-
-function assertNever(value: never): never {
-  throw new Error(
-    `Unhandled discriminated union member: ${JSON.stringify(value)}`
-  );
-}

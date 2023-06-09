@@ -60,10 +60,17 @@ function splitStringByUpperCase(string: string): string {
   return string.split(/(?=[A-Z])/).join(' ');
 }
 
+function assertNever(value: never): never {
+  throw new Error(
+    `Unhandled discriminated union member: ${JSON.stringify(value)}`
+  );
+}
+
 export {
   parseError,
   isFetchBaseQueryError,
   isErrorWithMessage,
   parseRTKQueryError,
   splitStringByUpperCase,
+  assertNever,
 };
