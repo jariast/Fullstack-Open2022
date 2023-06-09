@@ -13,27 +13,27 @@ interface Props {
 //TODO Add Date validations.
 const validationSchema = baseEntryValidationSchema.concat(
   yup.object({
-    employerName: yup.string().required('Employer name is required'),
-    sickLeave: yup.object({ startDate: yup.string(), endDate: yup.string() }),
+    discharge: yup
+      .object({
+        date: yup.string().required('Discharge Date is required'),
+        criteria: yup.string().required('Discharge Criteria Required'),
+      })
+      .required(),
   })
 );
 
-const OccupationalEntryForm = ({ onFormSubmit, isSubmitSuccess }: Props) => {
+const HospitalEntryForm = ({ onFormSubmit, isSubmitSuccess }: Props) => {
   const formik = useFormik({
     initialValues: {
       ...baseInitialValues,
-      employerName: '',
-      sickLeave: { startDate: '', endDate: '' },
+      discharge: { date: '', criteria: '' },
     },
-    validationSchema: validationSchema,
+    validationSchema,
     onSubmit: (values) => {
       const newEntry: NewEntry = {
         ...values,
-        type: EntryType.OccupationalHealthcare,
+        type: EntryType.Hospital,
       };
-      if (!values.sickLeave.endDate && !values.sickLeave.startDate) {
-        delete newEntry.sickLeave;
-      }
       onFormSubmit(newEntry);
     },
   });
@@ -78,31 +78,35 @@ const OccupationalEntryForm = ({ onFormSubmit, isSubmitSuccess }: Props) => {
           helperText={formik.touched.specialist && formik.errors.specialist}
         />
         <TextField
-          id="employerName"
-          name="employerName"
-          label="Employer Name"
-          value={formik.values.employerName}
+          id="discharge.date"
+          name="discharge.date"
+          label="Discharge Date"
+          type="date"
+          value={formik.values.discharge.date}
+          onChange={formik.handleChange}
+          //Why could the discharge property be undefined?
+          error={
+            formik.touched.discharge?.date &&
+            Boolean(formik.errors.discharge?.date)
+          }
+          helperText={
+            formik.touched.discharge?.date && formik.errors.discharge?.date
+          }
+        />
+        <TextField
+          id="discharge.criteria"
+          name="discharge.criteria"
+          label="Discharge Criteria"
+          value={formik.values.discharge.criteria}
           onChange={formik.handleChange}
           error={
-            formik.touched.employerName && Boolean(formik.errors.employerName)
+            formik.touched.discharge?.criteria &&
+            Boolean(formik.errors.discharge?.criteria)
           }
-          helperText={formik.touched.employerName && formik.errors.employerName}
-        />
-        <TextField
-          id="sickLeave.startDate"
-          name="sickLeave.startDate"
-          label="Start Date"
-          type="date"
-          value={formik.values.sickLeave.startDate}
-          onChange={formik.handleChange}
-        />
-        <TextField
-          id="sickLeave.endDate"
-          name="sickLeave.endDate"
-          label="End Date"
-          type="date"
-          value={formik.values.sickLeave.endDate}
-          onChange={formik.handleChange}
+          helperText={
+            formik.touched.discharge?.criteria &&
+            formik.errors.discharge?.criteria
+          }
         />
         <Button color="primary" type="submit">
           Submit
@@ -112,4 +116,4 @@ const OccupationalEntryForm = ({ onFormSubmit, isSubmitSuccess }: Props) => {
   );
 };
 
-export default OccupationalEntryForm;
+export default HospitalEntryForm;
